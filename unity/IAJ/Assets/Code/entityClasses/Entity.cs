@@ -46,7 +46,7 @@ public abstract class Entity : MonoBehaviour, IPerceivableEntity {
 		return String.Format("entity({0}, {1}, {2}, {3}, ", 
 			this._name, 
 			this._type,
-			(AstarPath.active.GetNearest(position).node as GridNode).GetIndex(),
+			getNode().GetIndex(),
 			Vector3ToProlog(position));
 	}
 	
@@ -58,4 +58,9 @@ public abstract class Entity : MonoBehaviour, IPerceivableEntity {
 		this.transform.position = position;
 		this.position = position;
 	}
+
+	public virtual GridNode getNode() {
+		return AstarPath.active.GetNearest(this.transform.position).node as GridNode;				
+	}
+	
 }

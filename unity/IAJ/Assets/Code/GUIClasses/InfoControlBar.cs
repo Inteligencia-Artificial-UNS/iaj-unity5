@@ -17,11 +17,18 @@ public class InfoControlBar : MonoBehaviour
 		GUILayout.BeginVertical();
 			GUILayout.Label(SimulationState.getInstance().gameTime.ToString(), timeLabelStyle);
 			scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+			foreach (Home home in SimulationState.getInstance().homes.Values) {
+				HomePanel(home);
+			}
 			foreach (AgentState agentState in SimulationState.getInstance().agents.Values) {
 				AgentPanel(agentState.agentController);
 			}
 			GUILayout.EndScrollView();
 		GUILayout.EndVertical();
+	}
+
+	void HomePanel(Home home) {
+		GUILayout.Label(home._name + " - " + home.content.Count);
 	}
 		
 	void AgentPanel(Agent agent) {		

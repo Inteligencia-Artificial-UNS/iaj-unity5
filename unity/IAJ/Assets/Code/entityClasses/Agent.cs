@@ -19,6 +19,8 @@ public class Agent : Entity {
 	public  int   life;
 	public  int   skill = 100;
 	
+	private Home home = null;
+	
 	private RigidBodyController       _controller;	
 	private List<PerceivableNode>     nodeList;							// TODO: Borrar. Es para test nomás
 	public  List<EObject>             backpack = new List<EObject>();	
@@ -54,6 +56,12 @@ public class Agent : Entity {
 		agent._delta	      = se._delta;
 		agent._type		      = "agent";
 		agent.actionDurations = new Dictionary<string, float>(se.actionDurations); // copio las duraciones de las acciones
+
+		List<Home> homes = SimulationState.getInstance().getHomes();
+		if (homes.Any()) {
+			agent.home = homes[SimulationState.getInstance().getAgentCount() % homes.Count];
+			agent.gameObject.transform.renderer.material.color = agent.home.color;
+		}
 		return agent;
 	}
 	
@@ -263,12 +271,18 @@ public class Agent : Entity {
 	public void dropPosCon(EObject obj){
 		Vector3 newPosition = this.transform.position;
 		this.backpack.Remove(obj);
+		Home home = SimulationState.getInstance().getHomeFromNode(getNode());
+		if (obj is Gold && home != null) {
+			// Add gold to home
+			home.put(obj);
+			return;
+		}
 		obj.gameObject.SetActive(true);
 		newPosition.y += 2.5f;
 		obj.setPosition(newPosition);
 		obj.rigidbody.AddForce(new Vector3(20,20,20)); //TODO: cambiar esta fruta
-	}	
-	
+	}
+
 	public void dropEverything() {
 		foreach (EObject obj in new List<EObject>(backpack))
 			dropPosCon(obj);
@@ -306,13 +320,13 @@ public class Agent : Entity {
 		
 	}
 	
-	public bool castSpellOpenPreCon(Grave grave, EObject potion){
-		return grave != null && !grave.isOpen()
+	public bool castSpellOpenPreCon(Building building, EObject potion){
+		return building != null && !building.isOpen()
 			&& potion != null && backpack.Contains(potion);
 	}
 	
-	public void castSpellOpenPosCon(Grave grave, EObject potion){
-		grave.setOpen(true);		
+	public void castSpellOpenPosCon(Building building, EObject potion){
+		building.setOpen(true);		
 		backpack.Remove(potion);
 		castSpellEffect();
 	}
@@ -370,6 +384,7 @@ public class Agent : Entity {
 		p.addEntitiesRange(perceptObjects<Gold> ("gold") .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Inn>  ("inn")  .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Grave>  ("grave")  .Cast<IPerceivableEntity>().ToList());
+		p.addEntitiesRange(perceptObjects<Home>  ("home")  .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Potion>  ("potion")  .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptNodes()				 .Cast<IPerceivableEntity>().ToList());
 	}

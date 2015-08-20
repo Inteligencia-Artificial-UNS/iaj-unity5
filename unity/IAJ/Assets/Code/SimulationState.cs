@@ -28,6 +28,7 @@ public class SimulationState : IEngine{
 	private Dictionary <string, EObject>	 objectsIn;
 	public  Dictionary <string, Inn>	 inns;
 	public  Dictionary <string, Grave>	 graves;
+	public  Dictionary <string, Home>	 homes;
 	public  Dictionary <int, Inn>	 nodeToInn;
 	private Dictionary <string, float>   actionDurationsDic;
 	public  IDictionary<string, EObject>	 objects
@@ -81,7 +82,8 @@ public class SimulationState : IEngine{
         //objects              = new Dictionary<int, ObjectState>();
 		objects				 = new Dictionary<string, EObject>      ();
 		inns				 = new Dictionary<string, Inn>      ();
-		graves				 = new Dictionary<string, Grave>      ();
+		graves				 = new Dictionary<string, Grave>	();
+		homes				 = new Dictionary<string, Home>	();
 		nodeToInn		     = new Dictionary<int, Inn>();
         readyActionQueue     = new MailBox   <Action>            (true);
         perceptRequests      = new MailBox   <PerceptRequest>    (true);
@@ -133,8 +135,9 @@ public class SimulationState : IEngine{
 			case ActionType.cast_spell: {				
 				if (action.description.Equals("open")) {					
 					SimulationState.getInstance().stdout.Send(agent.ToString());
-					SimulationState.getInstance().stdout.Send(action.objectID);				
-					result = agent.castSpellOpenPreCon(graves[action.targetID], objects[action.objectID]);								
+					SimulationState.getInstance().stdout.Send(action.objectID);
+					Building target = (homes[action.targetID] != null) ? (Building)homes[action.targetID] : (Building)graves[action.targetID];
+					result = agent.castSpellOpenPreCon(target, objects[action.objectID]);								
 				} else if (action.description.Equals("sleep"))
 					result = agent.castSpellSleepPreCon(agents[agentIDs[action.targetID]].agentController, objects[action.objectID]);													
 				break;
@@ -174,8 +177,10 @@ public class SimulationState : IEngine{
                 break;
             }
 			case ActionType.cast_spell: {
-				if (action.description.Equals("open"))
-					agent.castSpellOpenPosCon(graves[action.targetID], objects[action.objectID]);
+				if (action.description.Equals("open")) {
+				Building target = (homes[action.targetID] != null) ? (Building) homes[action.targetID] : (Building) graves[action.targetID];
+					agent.castSpellOpenPosCon(target, objects[action.objectID]);
+				}
 				if (action.description.Equals("sleep"))
 					agent.castSpellSleepPosCon(agents[agentIDs[action.targetID]].agentController, objects[action.objectID]);
 				break;
@@ -207,7 +212,7 @@ public class SimulationState : IEngine{
 	public void addInn(Inn inn){				
 		inn._name   = "inn" + inns.Count;
 		inns[inn._name]  = inn;
-		nodeToInn[(inn.getNode() as GridNode).GetIndex()] = inn;		
+		nodeToInn[inn.getNode().GetIndex()] = inn;		
 	}
 	
 	public void addGrave(Grave grave){				
@@ -215,6 +220,13 @@ public class SimulationState : IEngine{
 		grave._name   = "grave" + graves.Count;
 		SimulationState.getInstance().stdout.Send("name: "+grave._name);
 		graves[grave._name]  = grave;		
+	}
+
+	public void addHome(Home home){				
+		SimulationState.getInstance().stdout.Send("entro addHome");
+		//home._name   = "home" + homes.Count;
+		SimulationState.getInstance().stdout.Send("name: "+home._name);
+		homes[home._name]  = home;		
 	}
 	
 	public int getTime() {
@@ -234,4 +246,23 @@ public class SimulationState : IEngine{
 		has(container).Remove(contained);			
 	}
 	*/
+
+	public Home getHomeFromNode(Node node) {
+		SimulationState ss = SimulationState.getInstance();		
+		//ss.stdout.Send("Inns: "+ss.inns.Values.ToString());
+		foreach (Home home in ss.homes.Values) {
+			if (home.getNode() == node) //TODO check if it works or should compare by index.
+				return home;
+		}
+		return null;
+	}
+
+	public int getAgentCount() {
+		return agents.Keys.Count;
+	}
+
+	public List<Home> getHomes() {
+		return new List<Home>(homes.Values);
+	}
+
 }

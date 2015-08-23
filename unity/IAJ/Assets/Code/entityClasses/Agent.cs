@@ -101,7 +101,7 @@ public class Agent : Entity {
 		rigidbody.sleepVelocity = 0f;
 	}
 
-	private Texture2D MakeTex( int width, int height, Color col ) {
+	public static Texture2D MakeTex( int width, int height, Color col ) {
 		Color[] pix = new Color[width * height];
 		for( int i = 0; i < pix.Length; ++i )
 		{
@@ -378,6 +378,10 @@ public class Agent : Entity {
 			//TODO: excepcion? devolver falso? guardarlo en algun lado?
 		}
 	}
+
+	public Home getHome() {
+		return home;
+	}
 	
 	public void perceive(Percept p){						
 		p.addEntitiesRange(perceptObjects<Agent>("agent").Cast<IPerceivableEntity>().ToList());
@@ -395,9 +399,9 @@ public class Agent : Entity {
 		foreach(EObject eo in this.backpack) {
 			auxList.Add(eo.toProlog());			
 		}
-		aux = aux + String.Format("[[life, {0}], [lifeTotal, {1}], [skill, {2}], [lastAction, [{3}, {4}]], [has, {5}]])", 
+		aux = aux + String.Format("[[life, {0}], [lifeTotal, {1}], [skill, {2}], [lastAction, [{3}, {4}]], [home, {5}], [has, {6}]])", 
 			this.life, this.lifeTotal, this.skill, this.agentState.lastAction.toProlog(), this.agentState.lastActionTime,
-			PrologList.AtomList<string>(auxList));		
+		    (home != null) ? home.getName() : "no_home", PrologList.AtomList<string>(auxList));		
 		return aux;
 	}
 	

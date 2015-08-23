@@ -12,6 +12,7 @@ public class Home : Building {
 	
 	private bool open = false;
 	public Color color = Color.yellow;
+	private Texture2D texture;
 		
 	public override void Start() {
 		SimulationState.getInstance().stdout.Send("entro Start");
@@ -23,6 +24,7 @@ public class Home : Building {
 				
 		this.ss.addHome(this);
 		gameObject.renderer.material.color = color;
+		texture = Agent.MakeTex(2, 2, color);			
 	}
 	
 	public void put(EObject obj){		
@@ -46,6 +48,10 @@ public class Home : Building {
 	public bool isOpen() {
 		return open;
 	}
+
+	public Color getColor() {
+		return color;
+	}
 	
 	public void drop(EObject obj){				
 		obj.gameObject.SetActive(true);
@@ -54,6 +60,10 @@ public class Home : Building {
 		obj.transform.position = newPosition;
 		obj.rigidbody.AddForce(new Vector3(20,20,20));		
 	}
+
+	public Texture2D getTexture() {
+		return texture;
+	}
 	
 	public override string toProlog(){						
 		List<string> content = new List<string>();
@@ -61,6 +71,6 @@ public class Home : Building {
 			content.Add(eo.toProlog());			
 		}
 		return base.toProlog() + String.Format("[[has, {0}]])", PrologList.AtomList<string>(content));		
-	}	
+	}
 					
 }

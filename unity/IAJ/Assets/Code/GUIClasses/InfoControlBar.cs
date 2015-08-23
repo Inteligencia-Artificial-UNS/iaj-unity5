@@ -17,9 +17,11 @@ public class InfoControlBar : MonoBehaviour
 		GUILayout.BeginVertical();
 			GUILayout.Label(SimulationState.getInstance().gameTime.ToString(), timeLabelStyle);
 			scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-			foreach (Home home in SimulationState.getInstance().homes.Values) {
-				HomePanel(home);
-			}
+			GUILayout.BeginHorizontal();			
+			foreach (Home home in SimulationState.getInstance().homes.Values) {				
+				HomePanel(home);				
+			}			
+			GUILayout.EndHorizontal();
 			foreach (AgentState agentState in SimulationState.getInstance().agents.Values) {
 				AgentPanel(agentState.agentController);
 			}
@@ -27,14 +29,25 @@ public class InfoControlBar : MonoBehaviour
 		GUILayout.EndVertical();
 	}
 
+
+
 	void HomePanel(Home home) {
-		GUILayout.Label(home._name + " - " + home.content.Count);
+		GUIStyle style = new GUIStyle(GUI.skin.box);
+		style.normal.background = home.getTexture();			
+		GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+				GUILayout.Box("", style, GUILayout.Width(15), GUILayout.Height(15));
+				GUILayout.Label(home.content.Count.ToString());
+			GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
 	}
 		
 	void AgentPanel(Agent agent) {		
 		GUILayout.BeginVertical();	
-			//GUILayout.Box(agent._name, GUILayout.Height(100f));			
-		    GUILayout.Box(agent._name);			
+			//GUILayout.Box(agent._name, GUILayout.Height(100f));
+			GUIStyle style = new GUIStyle(GUI.skin.box);
+			style.normal.textColor = agent.getHome().getColor();
+		    GUILayout.Box(agent._name, style);			
 			GUILayout.Label("HP: "+agent.life+"/"+agent.lifeTotal+"  "+"XP: "+agent.skill);
 			GUILayout.BeginHorizontal();
 			 GUILayout.Label("BP:");

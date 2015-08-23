@@ -49,6 +49,10 @@ public abstract class Entity : MonoBehaviour, IPerceivableEntity {
 			getNode().GetIndex(),
 			Vector3ToProlog(position));
 	}
+
+	public string getName() {
+		return _name;
+	}
 	
 	public string getPrologId() {
 		return "["+this._type+","+this._name+"]";

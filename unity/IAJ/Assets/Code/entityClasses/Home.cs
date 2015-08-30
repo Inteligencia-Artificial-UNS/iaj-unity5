@@ -45,7 +45,7 @@ public class Home : Building {
 		}
 	}
 	
-	public bool isOpen() {
+	public override bool isOpen() {
 		return open;
 	}
 

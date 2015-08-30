@@ -25,7 +25,7 @@ public abstract class Building : Entity {
 		return node;
 	}
 
-	public bool isOpen() {
+	public virtual bool isOpen() {
 		return true;
 	}
 

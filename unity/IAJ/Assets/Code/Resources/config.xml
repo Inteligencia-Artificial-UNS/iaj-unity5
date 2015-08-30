@@ -27,14 +27,15 @@
             name="attack" 
             duration="1">
             <effects>
-                <effect attr="hp" value="-1" />                
+                <effect attr="hp" value="-5" />
+                <effect attr="xp" value="1" />                
             </effects>
         </action>
 		<action 
             name="cast_spell" 
             duration="1">
             <effects>
-                <effect attr="hp" value="-1" />
+                <effect attr="hp" value="-5" />
                 <effect attr="xp" value="10" />
             </effects>
         </action>

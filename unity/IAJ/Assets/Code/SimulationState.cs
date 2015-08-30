@@ -136,8 +136,11 @@ public class SimulationState : IEngine{
 				if (action.description.Equals("open")) {					
 					SimulationState.getInstance().stdout.Send(agent.ToString());
 					SimulationState.getInstance().stdout.Send(action.objectID);
-					Building target = (homes[action.targetID] != null) ? (Building)homes[action.targetID] : (Building)graves[action.targetID];
-					result = agent.castSpellOpenPreCon(target, objects[action.objectID]);								
+					Building target = (homes.ContainsKey(action.targetID)) ? (Building)homes[action.targetID] : 
+						(graves.ContainsKey(action.targetID)) ? (Building)graves[action.targetID] : null;
+					SimulationState.getInstance().stdout.Send(target != null ? target.getName() : " target null ");
+					result = agent.castSpellOpenPreCon(target, objects[action.objectID]);
+					SimulationState.getInstance().stdout.Send("PRe: "+result);
 				} else if (action.description.Equals("sleep"))
 					result = agent.castSpellSleepPreCon(agents[agentIDs[action.targetID]].agentController, objects[action.objectID]);													
 				break;
@@ -178,7 +181,9 @@ public class SimulationState : IEngine{
             }
 			case ActionType.cast_spell: {
 				if (action.description.Equals("open")) {
-				Building target = (homes[action.targetID] != null) ? (Building) homes[action.targetID] : (Building) graves[action.targetID];
+				SimulationState.getInstance().stdout.Send(" M3.1 ");
+				Building target = (homes.ContainsKey(action.targetID)) ? (Building) homes[action.targetID] : 
+					(graves.ContainsKey(action.targetID)) ? (Building) graves[action.targetID] : null;
 					agent.castSpellOpenPosCon(target, objects[action.objectID]);
 				}
 				if (action.description.Equals("sleep"))

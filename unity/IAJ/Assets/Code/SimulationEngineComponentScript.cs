@@ -66,9 +66,9 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
         scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(512), GUILayout.Height(512));
         GUILayout.Box(outputText);
         GUILayout.EndScrollView();
+		*/
 
-
-
+		/*
         if (GUI.Button(new Rect(4,682,128,20), "Start")) {			
             ss.stdout.Send("Starting simulation engine...\n");
             se.start();

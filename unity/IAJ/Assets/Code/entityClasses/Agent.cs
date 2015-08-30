@@ -308,7 +308,8 @@ public class Agent : Entity {
 		if (attackPowerAg > resistanceTargetAg) {
 			int harm = attackPowerAg - resistanceTargetAg;
 			target.subLife(harm);
-			this.skill = this.skill + 1;
+			Dictionary<SimulationConfig.AgAttributes, float> actionEffects = SimulationConfig.actionEffectsOnAttributes[ActionType.attack];
+			this.skill = this.skill + (int)actionEffects[SimulationConfig.AgAttributes.XP];
 			//SimulationEngineComponentScript.ss.stdout.Send("success. skill = "+ skill+". ");
 		}
 		Transform bubblegun = transform.Find("bubbleGun");
@@ -326,9 +327,13 @@ public class Agent : Entity {
 	}
 	
 	public void castSpellOpenPosCon(Building building, EObject potion){
-		building.setOpen(true);		
+		SimulationState.getInstance().stdout.Send(" M1 ");
+		building.setOpen(true);
+		SimulationState.getInstance().stdout.Send(" M2 ");
 		backpack.Remove(potion);
+		SimulationState.getInstance().stdout.Send(" M3 ");
 		castSpellEffect();
+		SimulationState.getInstance().stdout.Send(" M4 ");
 	}
 
 	public bool castSpellSleepPreCon(Agent target, EObject potion){

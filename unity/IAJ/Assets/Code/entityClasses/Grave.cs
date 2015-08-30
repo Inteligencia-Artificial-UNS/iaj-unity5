@@ -42,7 +42,7 @@ public class Grave : Building {
 		}
 	}
 	
-	public bool isOpen() {
+	public override bool isOpen() {
 		return open;
 	}
 	

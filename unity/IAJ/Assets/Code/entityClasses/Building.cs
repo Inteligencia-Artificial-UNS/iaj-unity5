@@ -29,7 +29,7 @@ public abstract class Building : Entity {
 		return true;
 	}
 
-	public void setOpen(bool open) {
+	public virtual void setOpen(bool open) {
 
 	}
 	

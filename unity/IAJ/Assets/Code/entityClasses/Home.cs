@@ -35,7 +35,7 @@ public class Home : Building {
 		SimulationState.getInstance().stdout.Send("salio put");
 	}
 	
-	public void setOpen(bool open) {
+	public override void setOpen(bool open) {
 		this.open = open;
 		if (open) {
 			foreach (EObject obj in content) {				

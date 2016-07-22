@@ -16,6 +16,7 @@ public class SimulationConfig {
 
 
     public SimulationConfig() {
+	/*
 		XmlDocument document = new XmlDocument();
 
 		FileInfo externalConfigFile = new FileInfo(Application.dataPath+"/Resources/config.xml");
@@ -49,14 +50,24 @@ public class SimulationConfig {
 
             //Debug.LogError("Config loaded.");
         }
-        catch (Exception) {
+        catch (Exception) { */
             Debug.LogError("No config file found.");
             actionDurations["noop"]       = 1f;
             actionDurations["move"]       = 1f;
             actionDurations["pickup"]     = 1f;
             actionDurations["drop"]       = 1f;
             actionDurations["attack"]     = 1f;
-            actionDurations["cast_spell"] = 1f;			
-        }
+            actionDurations["cast_spell"] = 1f;
+
+			foreach (ActionType actionType in Enum.GetValues(typeof(ActionType))) {
+				actionEffectsOnAttributes [actionType] = new Dictionary<AgAttributes, float> ();
+			}
+			actionEffectsOnAttributes [ActionType.attack].Add (AgAttributes.HP, -5f);
+			actionEffectsOnAttributes [ActionType.attack].Add (AgAttributes.XP, 1f);
+
+			actionEffectsOnAttributes [ActionType.cast_spell].Add (AgAttributes.HP, -5f);
+			actionEffectsOnAttributes [ActionType.cast_spell].Add (AgAttributes.XP, 10f);
+		/*    }
+	*/
     }
 }

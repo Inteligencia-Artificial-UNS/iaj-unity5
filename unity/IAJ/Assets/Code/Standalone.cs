@@ -44,12 +44,13 @@ public class StandaloneServer {
         Start();
         while (! quit) {
             Update();
-            if (Console.KeyAvailable) {
+            /*if (Console.KeyAvailable) {
                 Console.ReadKey(false);
                 Console.WriteLine("SE: quitting.");
                 se.stop();
                 quit = true;
             }
+            */
         }
     }
 }

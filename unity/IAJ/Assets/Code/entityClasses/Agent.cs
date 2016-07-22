@@ -123,7 +123,7 @@ public class Agent : Entity {
 		nodeList = this.perceptNodes();
 		checkInsideBuilding();
 		// TEST
-		if (_engine.test){
+/*		if (_engine.test){
 			if (!_controller.moving && nodeList.Count > 1){
 				GridNode node = nodeList[UnityEngine.Random.Range(0, nodeList.Count)]._node;
 				_controller.move((Vector3)node.position);	
@@ -142,7 +142,7 @@ public class Agent : Entity {
 			}
 		}
 		// TEST
-		
+*/		
 	}		
 	private void checkInsideBuilding(){
 		SimulationState ss;		

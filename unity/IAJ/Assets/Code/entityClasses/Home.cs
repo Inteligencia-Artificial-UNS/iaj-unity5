@@ -9,8 +9,7 @@ public class Home : Building {
 	public SimulationState ss;
 	
 	public List<EObject> content = new List<EObject>();	
-	
-	private bool open = false;
+
 	public Color color = Color.yellow;
 	private Texture2D texture;
 		
@@ -36,7 +35,6 @@ public class Home : Building {
 	}
 	
 	public override void setOpen(bool open) {
-		this.open = open;
 		if (open) {
 			foreach (EObject obj in content) {				
 				drop(obj);				
@@ -46,7 +44,7 @@ public class Home : Building {
 	}
 	
 	public override bool isOpen() {
-		return open;
+		return false;
 	}
 
 	public Color getColor() {

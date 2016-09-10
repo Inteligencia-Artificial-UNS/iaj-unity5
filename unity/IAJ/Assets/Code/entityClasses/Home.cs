@@ -22,7 +22,7 @@ public class Home : Building {
 			as SimulationEngineComponentScript).engine as SimulationState;
 				
 		this.ss.addHome(this);
-		gameObject.renderer.material.color = color;
+		gameObject.GetComponent<Renderer>().material.color = color;
 		texture = Agent.MakeTex(2, 2, color);			
 	}
 	
@@ -56,7 +56,7 @@ public class Home : Building {
 		Vector3 newPosition = this.transform.position;
 		newPosition.y += 2.5f;
 		obj.transform.position = newPosition;
-		obj.rigidbody.AddForce(new Vector3(20,20,20));		
+		obj.GetComponent<Rigidbody>().AddForce(new Vector3(20,20,20));		
 	}
 
 	public Texture2D getTexture() {

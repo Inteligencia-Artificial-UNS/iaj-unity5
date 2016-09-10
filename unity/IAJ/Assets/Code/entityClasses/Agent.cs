@@ -60,7 +60,7 @@ public class Agent : Entity {
 		List<Home> homes = SimulationState.getInstance().getHomes();
 		if (homes.Any()) {
 			agent.home = homes[SimulationState.getInstance().getAgentCount() % homes.Count];
-			agent.gameObject.transform.renderer.material.color = agent.home.color;
+			agent.gameObject.transform.GetComponent<Renderer>().material.color = agent.home.color;
 		}
 		return agent;
 	}
@@ -71,7 +71,7 @@ public class Agent : Entity {
 	public GUIStyle lifeLevelStyle;
 	
 	void OnGUI () {
-		Vector3 screenPos = Camera.mainCamera.WorldToScreenPoint(transform.position);
+		Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
 		//GUI.Label(new Rect(screenPos.x, screenPos.y, 10,5), _name);
 		int infoHeight = 25;
 		int infoWidth = 100;
@@ -98,7 +98,7 @@ public class Agent : Entity {
 		base.Start();		
 		this._controller = this.GetComponent<RigidBodyController>();
 		InvokeRepeating("execute", 0, _delta);
-		rigidbody.sleepVelocity = 0f;
+		GetComponent<Rigidbody>().sleepVelocity = 0f;
 	}
 
 	public static Texture2D MakeTex( int width, int height, Color col ) {
@@ -280,7 +280,7 @@ public class Agent : Entity {
 		obj.gameObject.SetActive(true);
 		newPosition.y += 2.5f;
 		obj.setPosition(newPosition);
-		obj.rigidbody.AddForce(new Vector3(20,20,20)); //TODO: cambiar esta fruta
+		obj.GetComponent<Rigidbody>().AddForce(new Vector3(20,20,20)); //TODO: cambiar esta fruta
 	}
 
 	public void dropEverything() {
@@ -314,7 +314,7 @@ public class Agent : Entity {
 		}
 		Transform bubblegun = transform.Find("bubbleGun");
 		bubblegun.LookAt(target.position);		
-		bubblegun.particleSystem.Play();	
+		bubblegun.GetComponent<ParticleSystem>().Play();	
 	}
 	
 	private void attackStop() {
@@ -352,19 +352,19 @@ public class Agent : Entity {
 	}
 
 	public void castSpellEffect() {
-		transform.light.enabled = true;
-		transform.light.color = Color.white;
+		transform.GetComponent<Light>().enabled = true;
+		transform.GetComponent<Light>().color = Color.white;
 		Invoke("disableLight", 3);
 	}
 
 	public void spelledEffect() {
-		transform.light.enabled = true;
-		transform.light.color = Color.red;
+		transform.GetComponent<Light>().enabled = true;
+		transform.GetComponent<Light>().color = Color.red;
 		Invoke("disableLight", 3);
 	}
 
 	private void disableLight() {
-		transform.light.enabled = false;
+		transform.GetComponent<Light>().enabled = false;
 	}
 
 	//DEPRECATED
@@ -377,7 +377,7 @@ public class Agent : Entity {
 			newPosition.y += 2.5f;
 			obj.transform.position = newPosition;
 			if (!obj._type.Equals("potion"))
-				obj.rigidbody.AddForce(new Vector3(20,20,20)); //TODO: cambiar esta fruta
+				obj.GetComponent<Rigidbody>().AddForce(new Vector3(20,20,20)); //TODO: cambiar esta fruta
 		}
 		else{
 			//TODO: excepcion? devolver falso? guardarlo en algun lado?

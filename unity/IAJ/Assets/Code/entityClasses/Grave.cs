@@ -51,7 +51,7 @@ public class Grave : Building {
 		Vector3 newPosition = this.transform.position;
 		newPosition.y += 2.5f;
 		obj.transform.position = newPosition;
-		obj.rigidbody.AddForce(new Vector3(20,20,20));		
+		obj.GetComponent<Rigidbody>().AddForce(new Vector3(20,20,20));		
 	}
 
 	public void initializeContent() {

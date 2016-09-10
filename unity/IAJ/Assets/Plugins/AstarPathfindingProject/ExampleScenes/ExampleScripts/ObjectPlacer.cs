@@ -25,7 +25,7 @@ public class ObjectPlacer : MonoBehaviour {
 			
 			GameObject obj = (GameObject)GameObject.Instantiate (go,p,Quaternion.identity);
 			
-			Bounds b = obj.collider.bounds;
+			Bounds b = obj.GetComponent<Collider>().bounds;
 			GraphUpdateObject ob = new GraphUpdateObject(b);
 			
 			AstarPath.active.UpdateGraphs (ob);

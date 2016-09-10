@@ -25,7 +25,7 @@ public class ConnectionHandler {
  
     public ConnectionHandler(SimulationState ss) {
         // NETWORK & OPERATION
-        tcpListener             = new TcpListener(IPAddress.Parse("127.0.0.1"), 8888);
+		tcpListener             = new TcpListener(IPAddress.Parse("0.0.0.0"), 8888);
         connectionHandlerThread = new Thread(new ThreadStart(this.run));
         connectionHandlerThread.IsBackground = true;
 

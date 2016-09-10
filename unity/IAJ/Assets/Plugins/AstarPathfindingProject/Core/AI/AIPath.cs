@@ -143,7 +143,7 @@ public class AIPath : MonoBehaviour {
 		
 		controller = GetComponent<CharacterController>();
 		navController = GetComponent<NavmeshController>();
-		rigid = rigidbody;
+		rigid = GetComponent<Rigidbody>();
 	}
 	
 	public void Start () {

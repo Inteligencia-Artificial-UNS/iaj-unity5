@@ -28,15 +28,20 @@ public class RigidBodyController : MonoBehaviour {
 	}
   
 	void Awake () {
-	    rigidbody.freezeRotation = true;
-	    rigidbody.useGravity     = false;
+	    GetComponent<Rigidbody>().freezeRotation = true;
+	    GetComponent<Rigidbody>().useGravity     = false;
+		// To avoid OnCollisionStay to be called when collisioning with terrain, however it breaks the game.
+//		Physics.IgnoreCollision(GameObject.Find("Terrain").GetComponent<Collider>(), gameObject.GetComponent<Collider>());
 	}
  
 	void FixedUpdate () {
 		
 	    if (moving && grounded) {
-	    
-	        if (!((target - transform.position).magnitude < _proximityRange)){		// if not near
+			
+			Vector3 target2 = new Vector3(target.x, 0, target.z);
+			Vector3 transformPosition2 = new Vector3(transform.position.x, 0, transform.position.z);
+//	        if (!((target - transform.position).magnitude < _proximityRange)) {		// if not near
+			if (!((target2 - transformPosition2).magnitude < _proximityRange)) {		// if not near
 				
 				// Calculate how fast we should be moving
 				
@@ -45,21 +50,25 @@ public class RigidBodyController : MonoBehaviour {
 		        targetVelocity         *= _speed;
 	 
 		        // Apply a force that attempts to reach our target velocity
-		        Vector3 velocity       = rigidbody.velocity;
+		        Vector3 velocity       = GetComponent<Rigidbody>().velocity;
 		        Vector3 velocityChange = (targetVelocity - velocity);
 		        velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
 		        velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
 		        velocityChange.y = 0;
-		        rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
+		        GetComponent<Rigidbody>().AddForce(velocityChange, ForceMode.VelocityChange);
+//				GetComponent<Rigidbody>().velocity = targetVelocity;
 			}
- 			else{
+ 			else {
 				moving = false;
+//				GetComponent<Rigidbody>().velocity = Vector3.zero;
+//				GetComponent<Rigidbody>().velocity *= 0.1f;
+				GetComponent<Rigidbody>().velocity *= 0.3f;
 				_agent.stoppedAction();
 			}
 	    }
  
 	    // We apply gravity manually for more tuning control
-	    rigidbody.AddForce(new Vector3 (0, -_gravity * rigidbody.mass, 0));
+	    GetComponent<Rigidbody>().AddForce(new Vector3 (0, -_gravity * GetComponent<Rigidbody>().mass, 0));
  
 	    grounded = false;
 	}
@@ -69,7 +78,7 @@ public class RigidBodyController : MonoBehaviour {
 		grounded = true;  
 		if (moving &&
 			!movementStoppedInvoked &&
-			this.rigidbody.velocity.magnitude < 0.1f &&
+			this.GetComponent<Rigidbody>().velocity.magnitude < 0.1f &&
 			(DateTime.Now - this.lastMovementTS).Milliseconds > 500)
 		
 		{
@@ -83,10 +92,13 @@ public class RigidBodyController : MonoBehaviour {
 	void movementStopped(){
 		movementStoppedInvoked = false;
 		SimulationEngineComponentScript.ss.stdout.Send("movementStopped invoked");
-		if (this.rigidbody.velocity.magnitude < 0.1f){
+		if (this.GetComponent<Rigidbody>().velocity.magnitude < 0.1f){
 			SimulationEngineComponentScript.ss.stdout.Send("movementStopped took effect");
 			moving = false;
-			if ((target - transform.position).magnitude < _proximityRange){
+			Vector3 target2 = new Vector3(target.x, 0, target.z);
+			Vector3 tansformPosition2 = new Vector3(transform.position.x, 0, transform.position.z);
+//			if ((target - transform.position).magnitude < _proximityRange){
+			if ((target2 - tansformPosition2).magnitude < _proximityRange){
 				this._agent.stoppedAction();
 			}
 			else{
@@ -120,11 +132,14 @@ public class RigidBodyController : MonoBehaviour {
 		distVector.y = 0;
 		float dist = distVector.magnitude;		
 		float angle = Mathf.Atan(height / dist);
-		float speed = 10 / (1 + angle * 20); 
+//		float speed = 10 / (1 + angle * 20);
+		float speed = 10 / (1 + angle * 10); 
 		if(speed != 10)
 			Debug.Log(speed);
 		
 		return speed;
+//		return 30f;
+//		return 10f;
 	}
 	
 	public static float connectionCost(Vector3 orig, Vector3 dest) {

@@ -374,7 +374,7 @@ public class SimulationEngine {
                 try {
 					AgentState agentState = agents[agentID];
 					agentState.lastAction = currentAction;
-					agentState.lastActionTime = SimulationState.getInstance().getTime();
+				agentState.lastActionTime = SimulationState.getInstance().getTime();
                     if (simulationState.executableAction(currentAction)) {
                         //simulationState.stdout.Send(String.Format("AH: the action is executable.\n"));
                         //agents[agentID].results.Send(ActionResult.success);

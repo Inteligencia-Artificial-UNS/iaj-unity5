@@ -29,7 +29,6 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
 		}
 	}
 	private bool paused = false;
-
     
     // Use this for initialization
     void Awake () {		

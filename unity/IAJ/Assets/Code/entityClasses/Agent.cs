@@ -33,7 +33,7 @@ public class Agent : Entity {
 	private bool   toogle = false;
 	//public  int   velocity = 5;			// TODO: revisar si esto va
 	
-	
+	private Texture2D lifeLevelTex;
 	
 	public  delegate       void ActionFinished(ActionResult result);
 	private ActionFinished actionFinished = delegate(ActionResult x) { };
@@ -81,14 +81,17 @@ public class Agent : Entity {
 			GUILayout.Label(_name, nameStyle);
 			/*Energy level*/
 			GUILayout.BeginVertical(lifeStyle);
-			int totalLifeWidth = 50;
-			int lifeWidth = (int)(totalLifeWidth*((float)life/lifeTotal));
-			GUILayout.Box("",GUILayout.Width(totalLifeWidth), GUILayout.Height(10));			
-			Rect lastRect = GUILayoutUtility.GetLastRect();
-			lastRect.Set(lastRect.x, lastRect.y, lifeWidth, lastRect.width);			
-			lifeLevelStyle = new GUIStyle(GUI.skin.box);
-			lifeLevelStyle.normal.background = MakeTex(2, 2, Color.green);			
-			GUI.Box(lastRect,"", lifeLevelStyle);			
+			float totalLifeWidth = 50f;
+		    float lifeWidth = totalLifeWidth*((float)life/lifeTotal);
+			GUILayout.Box("",GUILayout.Width(totalLifeWidth), GUILayout.Height(5));			
+			if (Event.current.type == EventType.Repaint && life != 0) {
+				Rect lastRect = GUILayoutUtility.GetLastRect();
+				Rect newRect = new Rect (lastRect.x, lastRect.y, Math.Max(lifeWidth, 4f), lastRect.height); 
+				lifeLevelStyle = new GUIStyle (GUI.skin.box);
+				//lifeLevelStyle.normal.background = MakeTex (1, 1, Color.green);
+				lifeLevelStyle.normal.background = lifeLevelTex;
+				GUI.Box (newRect, "", lifeLevelStyle);
+			}
 			GUILayout.EndVertical();
 		GUILayout.EndVertical();
 		GUI.EndGroup();
@@ -99,6 +102,7 @@ public class Agent : Entity {
 		this._controller = this.GetComponent<RigidBodyController>();
 		InvokeRepeating("execute", 0, _delta);
 		GetComponent<Rigidbody>().sleepVelocity = 0f;
+		lifeLevelTex = MakeTex (1, 1, Color.green);
 	}
 
 	public static Texture2D MakeTex( int width, int height, Color col ) {
@@ -190,7 +194,7 @@ public class Agent : Entity {
 	}
 
 	private void wakeUp() {
-		life = (int)(lifeTotal * .2f);
+		setLife((int)(lifeTotal * .2f));
 		actionFinished(ActionResult.success);
 	}
 
@@ -199,7 +203,7 @@ public class Agent : Entity {
 	}
 
 	public void setUnconscious() {
-		life = 0;
+		setLife(0);
 		dropEverything();
 	}
 
@@ -209,35 +213,34 @@ public class Agent : Entity {
 	
 	public void subLife(int dif) {
 		if(this.life - dif <= 0)
-			this.life = 0;				
+			setLife(0);				
 		else
-			this.life = life - dif;	
-				
-		updateEnergyLevel();		
+			setLife(life - dif);	
 	}
-	
-	private void updateEnergyLevel() {
-		//SimulationEngineComponentScript.ss.stdout.Send("energybar "+transform.Find("energybar").Find("energyLevel").ToString());		
-		Transform energyLevel = transform.Find("energybar").Find("energyLevel");
-		Vector3 origScale = energyLevel.localScale;
-		Vector3 origPos = energyLevel.localPosition;
-		energyLevel.localScale = new Vector3((float)life/lifeTotal, origScale.y, origScale.z);
-		energyLevel.localPosition = new Vector3(-((1f - energyLevel.localScale.x)/2f), origPos.y, origPos.z);
-		//SimulationEngineComponentScript.ss.stdout.Send("energyLevel: "+energyLevel.localScale.x);
-		//SimulationEngineComponentScript.ss.stdout.Send("energyPos: "+energyLevel.localPosition);		
-		//transform.Find("energyLevel").
-		
-		
-	}
-	
+
 	public void addLife(int dif) {
-		if(this.life + dif >= this.lifeTotal){
-			this.life = this.lifeTotal;
-		} else {
-			this.life += dif;	
-		}
-		updateEnergyLevel();
+		if(this.life + dif >= this.lifeTotal)
+			setLife(this.lifeTotal);
+		else 
+			setLife(life + dif);	
 	}
+
+	public void setLife(int life) {
+		this.life = life;
+		//updateEnergyLevel();
+	}
+	
+//	private void updateEnergyLevel() {
+//		//SimulationEngineComponentScript.ss.stdout.Send("energybar "+transform.Find("energybar").Find("energyLevel").ToString());		
+//		Transform energyLevel = transform.Find("energybar").Find("energyLevel");
+//		Vector3 origScale = energyLevel.localScale;
+//		Vector3 origPos = energyLevel.localPosition;
+//		energyLevel.localScale = new Vector3((float)life/lifeTotal, origScale.y, origScale.z);
+//		energyLevel.localPosition = new Vector3(-((1f - energyLevel.localScale.x)/2f), origPos.y, origPos.z);
+//		//SimulationEngineComponentScript.ss.stdout.Send("energyLevel: "+energyLevel.localScale.x);
+//		//SimulationEngineComponentScript.ss.stdout.Send("energyPos: "+energyLevel.localPosition);		
+//		//transform.Find("energyLevel").
+//	}
 
 	public void addSkill(int diff) {
 		skill += diff;
@@ -292,7 +295,7 @@ public class Agent : Entity {
 		if (target.Equals(this) || life <= 0 || target.life <= 0)
 			return false;
 		
-		Vector3 distance = this.transform.position - this.position;
+		Vector3 distance = this.transform.position - target.transform.position;
 		return distance.magnitude < 11f;
 	}
 	

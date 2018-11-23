@@ -72,7 +72,6 @@ public class RigidBodyController : MonoBehaviour {
  
 	    grounded = false;
 	}
-
 	
 	void OnCollisionStay(){
 		grounded = true;  

@@ -24,7 +24,7 @@ public abstract class Entity : MonoBehaviour, IPerceivableEntity {
 	}
 	
 	
-	
+	/*
 	public virtual Dictionary<string, System.Object> perception(){
 		Dictionary<string, System.Object> p = new Dictionary<string, System.Object>();
 		p["name"]        = _name; 					// this is the same name from the monoBehaviour
@@ -35,20 +35,30 @@ public abstract class Entity : MonoBehaviour, IPerceivableEntity {
 		
 		return p;
 	}
+	*/
 	
 	static public string Vector3ToProlog(Vector3 v){
 		return String.Format("vector({0}, {1}, {2})", v.x, v.y, v.z);
 	}
 	
-	// cada clase que implemente esta clase tiene que sobreescribir este método
-	public virtual string toProlog ()
-	{	
-		return String.Format("entity({0}, {1}, {2}, {3}, ", 
+	public string toProlog() {
+        Dictionary<string, string> percProps = getPerceptionProps();
+        List<string> percPropsList = new List<string>();
+        foreach (var propName in percProps.Keys) {
+            percPropsList.Add("[" + propName + "," + percProps[propName] + "]");
+        }
+        string percPropsS = PrologList.AtomList<string>(percPropsList);
+        return String.Format("entity({0}, {1}, {2}, {3}, {4})", 
 			this._name, 
 			this._type,
 			getNode().GetIndex(),
-			Vector3ToProlog(position));
+			Vector3ToProlog(position),
+            percPropsS);
 	}
+
+    protected virtual Dictionary<string, string> getPerceptionProps() {
+        return new Dictionary<string, string>();
+    }
 
 	public string getName() {
 		return _name;

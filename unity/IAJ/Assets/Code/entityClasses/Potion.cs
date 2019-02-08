@@ -2,12 +2,18 @@ using UnityEngine;
 using System.Collections;
 
 public class Potion : EObject {
-	
+
+    public void Awake() {
+        // Put field initialization on awake since Start is not called for 
+        // objects that are de-activaded on the beginning (see Inn.put)
+        this._type = "potion";
+        this.weigth = 2;
+        this.Price = 15;
+    }
+
 	public override void Start(){
 		base.Start();
-		this._type   = "potion";
-		this.weigth  = 2;
-		this._engine = SimulationState.getInstance();
+        this._engine = SimulationState.getInstance();
 		if (!createdByCode){
 			_engine.addPotion(this);
 		}
@@ -23,10 +29,5 @@ public class Potion : EObject {
 		potion._engine	   = SimulationState.getInstance();		
 		potion._engine.addPotion(potion);
 		return potion;
-	}
-	
-	public override string toProlog(){		
-		string aux = base.toProlog();
-		return aux + "])";
 	}
 }

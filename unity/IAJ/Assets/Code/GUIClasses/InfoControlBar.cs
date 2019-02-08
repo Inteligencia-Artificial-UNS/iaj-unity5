@@ -64,7 +64,7 @@ GUIStyle getBlackStyle() {
 			GUILayout.Box(agent._name, getBlackStyle());			
 //			GUILayout.EndVertical ();
 			GUILayout.Label("HP: "+agent.life //+ "/"+agent.lifeTotal 
-			+ "  " + "XP: "+agent.skill);
+                            + "  " + "XP: "+agent.skill + "  " + "GP: " + agent.gold);
 			GUILayout.BeginHorizontal();
 			 GUILayout.Label("BP:");
 			 Dictionary<Type, int> typeToCount = new Dictionary<Type, int>();

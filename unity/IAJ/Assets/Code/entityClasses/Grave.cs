@@ -24,7 +24,7 @@ public class Grave : Building {
 		initializeContent();		
 	}
 	
-	public void put(EObject obj){		
+	public void put(EObject obj) {		
 		SimulationState.getInstance().stdout.Send("entro put");
 		obj.gameObject.SetActive(false);
 		obj.transform.position = this.transform.position;
@@ -83,13 +83,15 @@ public class Grave : Building {
 		}
 		
 	}
-	
-	public override string toProlog(){						
-		List<string> content = new List<string>();
-		foreach(EObject eo in this.content) {
-			content.Add(eo.toProlog());			
-		}
-		return base.toProlog() + String.Format("[[has, {0}]])", PrologList.AtomList<string>(content));		
-	}	
-					
+
+    protected override Dictionary<string, string> getPerceptionProps() {
+        Dictionary<string, string> percProps = base.getPerceptionProps();
+        List<string> contentPl = new List<string>();
+        foreach (EObject eo in this.content) {
+            contentPl.Add(eo.toProlog());
+        }
+        percProps.Add("has", PrologList.AtomList<string>(contentPl));
+        return percProps;
+    }
+
 }

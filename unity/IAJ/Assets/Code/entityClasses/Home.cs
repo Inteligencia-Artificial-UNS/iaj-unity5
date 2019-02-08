@@ -51,7 +51,7 @@ public class Home : Building {
 		return color;
 	}
 	
-	public void drop(EObject obj){				
+	public void drop(EObject obj) {				
 		obj.gameObject.SetActive(true);
 		Vector3 newPosition = this.transform.position;
 		newPosition.y += 2.5f;
@@ -62,13 +62,16 @@ public class Home : Building {
 	public Texture2D getTexture() {
 		return texture;
 	}
-	
-	public override string toProlog(){						
-		List<string> content = new List<string>();
-		foreach(EObject eo in this.content) {
-			content.Add(eo.toProlog());			
-		}
-		return base.toProlog() + String.Format("[[has, {0}]])", PrologList.AtomList<string>(content));		
-	}
-					
+
+    protected override Dictionary<string, string> getPerceptionProps() {
+        Dictionary<string, string> percProps = base.getPerceptionProps();
+        List<string> contentPl = new List<string>();
+        foreach (EObject eo in this.content)
+        {
+            contentPl.Add(eo.toProlog());
+        }
+        percProps.Add("has", PrologList.AtomList<string>(contentPl));
+        return percProps;
+    }
+
 }

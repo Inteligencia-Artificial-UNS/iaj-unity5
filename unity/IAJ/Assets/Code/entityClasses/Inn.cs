@@ -9,8 +9,9 @@ public class Inn : Building {
 	public SimulationState ss;
 	
 	public float healCoefficient;
-	
-	private Dictionary<Agent, Interval> forbiddenEntry;		
+    public List<EObject> content = new List<EObject>();
+
+    private Dictionary<Agent, Interval> forbiddenEntry;		
 	
 	public override void Start(){
 		base.Start();
@@ -21,8 +22,8 @@ public class Inn : Building {
 				
 		this.ss.addInn(this);
 		
-		forbiddenEntry = new Dictionary<Agent, Interval>();		
-		
+		forbiddenEntry = new Dictionary<Agent, Interval>();
+        this.restock();
 	}	
 	
 	
@@ -41,17 +42,26 @@ public class Inn : Building {
 		Debug.Log ("Estoy en la posada");
 		//ss.stdout.Send("Agente en la posada");
 	}
-	
-	public override string toProlog(){				
-		List<string> forbAgents = new List<string>();
-		foreach(Agent ag in forbiddenEntry.Keys.ToList()) {
-			if (isForbidden(ag))
-				forbAgents.Add("["+ag.getPrologId()+","+forbiddenEntry[ag].getEnd()+"]");
-		}
-		return base.toProlog() + String.Format("[[forbidden_entry, {0}]])", PrologList.AtomList<string>(forbAgents));		
-	}
-	
-	private bool isForbidden(Agent agent) {
+
+    protected override Dictionary<string, string> getPerceptionProps() {
+        Dictionary<string, string> percProps = base.getPerceptionProps();
+        List<string> forbAgents = new List<string>();
+        foreach (Agent ag in forbiddenEntry.Keys.ToList())
+        {
+            if (isForbidden(ag))
+                forbAgents.Add("[" + ag.getPrologId() + "," + forbiddenEntry[ag].getEnd() + "]");
+        }
+        percProps.Add("forbidden_entry", PrologList.AtomList<string>(forbAgents));
+        List<string> contentPl = new List<string>();
+        foreach (EObject eo in this.content)
+        {
+            contentPl.Add(eo.toProlog());
+        }
+        percProps.Add("has", PrologList.AtomList<string>(contentPl));
+        return percProps;
+    }
+
+    private bool isForbidden(Agent agent) {
 		return forbiddenEntry.ContainsKey(agent) && forbiddenEntry[agent].contains(SimulationState.getInstance().getTime());
 	}
 	
@@ -97,4 +107,26 @@ public class Inn : Building {
 				forbiddenEntry.Remove(ag);				
 		}
 	}
+
+    private void restock() {
+        if (this.content.Count == 0) {
+            Potion potion = Potion.Create(new Vector3(0, 0, 0));
+            this.put(potion);
+        }
+    }
+
+    public void put(EObject obj) {
+        obj.gameObject.SetActive(false);
+        obj.transform.position = this.transform.position;
+        content.Add(obj);
+    }
+
+    public bool has(EObject item) {
+        return content.Contains(item);
+    }
+
+    public void sell(EObject item) {
+        content.Remove(item);
+        restock();
+    }
 }

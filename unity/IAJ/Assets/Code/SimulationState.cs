@@ -129,7 +129,7 @@ public class SimulationState : IEngine{
                 break;
             }
             case ActionType.drop: {
-                result = agent.dropPreCon(objects[action.objectID]);;
+                result = agent.dropPreCon(objects[action.objectID]);
                 break;
             }
 			case ActionType.cast_spell: {				
@@ -145,6 +145,11 @@ public class SimulationState : IEngine{
 					result = agent.castSpellSleepPreCon(agents[agentIDs[action.targetID]].agentController, objects[action.objectID]);													
 				break;
 			}
+            case ActionType.buy: {
+                        Inn target = (inns.ContainsKey(action.targetID)) ? inns[action.targetID] : null;
+                        result = agent.buyPreCond(target, objects[action.objectID]);
+                        break;
+            }
 			}
 		} catch (System.Collections.Generic.KeyNotFoundException e) {
              SimulationState.getInstance().stdout.Send(String.Format("Key not found in SimulationState.executableAction. Precondition of action {0} Failed: {1} ", action.type.ToString(), e.ToString()));
@@ -190,6 +195,11 @@ public class SimulationState : IEngine{
 					agent.castSpellSleepPosCon(agents[agentIDs[action.targetID]].agentController, objects[action.objectID]);
 				break;
 			}
+            case ActionType.buy: {
+                    Inn target = (inns.ContainsKey(action.targetID)) ? inns[action.targetID] : null;
+                    agent.buyPosCond(target, objects[action.objectID]);
+                    break;
+                }
         }        		
 		if (!action.type.Equals(ActionType.move))
 			agent.stopActionAfter(agent.actionDurations[action.type.ToString()]);								        

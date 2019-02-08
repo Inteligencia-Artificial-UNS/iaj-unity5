@@ -28,7 +28,7 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
 			return ss;
 		}
 	}
-	private bool paused = false;
+	private bool paused = true;
     
     // Use this for initialization
     void Awake () {		
@@ -41,9 +41,10 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
         InvokeRepeating( "DoWork", 0, 0.1f );			
 
 		// Instantiate dummy agent for testing purposes
-		/*
-		se.instantiateDummyAgent("dummy1", agentPrefab);
-		AgentState dummy1AgState = se.simulationState.agents[se.simulationState.agentIDs["dummy1"]];
+		
+		//se.instantiateDummyAgent("dummy1", agentPrefab);
+		//AgentState dummy1AgState = se.simulationState.agents[se.simulationState.agentIDs["dummy1"]];
+        /*
 		dummy1AgState.agentController.pickupPosCon(Gold.Create(new Vector3(0,0,0)));
 		dummy1AgState.agentController.pickupPosCon(Gold.Create(new Vector3(0,0,0)));
 		dummy1AgState.agentController.pickupPosCon(Potion.Create(new Vector3(0,0,0)));
@@ -52,6 +53,7 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
 		//se.instantiateDummyAgent("dummy2", agentPrefab);
 		*/
 		se.start();
+        Time.timeScale = 0;
     }
     
     // Update is called once per frame
@@ -79,7 +81,7 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
         }
         */
 
-		if (GUI.Button(new Rect(4,682,128,20), paused ? "Resume" : "Pause")) {
+		if (GUI.Button(new Rect(4,682,128,20), paused ? "Play" : "Pause")) {
 			paused = !paused;
 			if (paused)
 				Time.timeScale = 0;

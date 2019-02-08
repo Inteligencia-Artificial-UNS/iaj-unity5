@@ -2,11 +2,17 @@ using UnityEngine;
 using System.Collections;
 
 public class Gold : EObject {
-	
-	public override void Start(){
+
+    public void Awake()
+    {
+        // Put field initialization on awake since Start is not called for 
+        // objects that are de-activaded on the beginning (see Inn.put)
+        this._type = "gold";
+        this.weigth = 2;
+    }
+
+    public override void Start(){
 		base.Start();
-		this._type   = "gold";
-		this.weigth  = 2;
 		this._engine = SimulationState.getInstance();
 		if (!createdByCode){
 			_engine.addGold(this);
@@ -25,8 +31,4 @@ public class Gold : EObject {
 		return gold;
 	}
 	
-	public override string toProlog(){
-		string aux = base.toProlog();
-		return aux + "])";
-	}
 }

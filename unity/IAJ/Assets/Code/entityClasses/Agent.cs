@@ -18,6 +18,7 @@ public class Agent : Entity {
 	private float _delta = 0.1f;   		// time between ticks of "simulation"
 	public  int   life;
 	public  int   skill = 100;
+    public int gold = 10;
 	
 	private Home home = null;
 	
@@ -149,12 +150,12 @@ public class Agent : Entity {
 */		
 	}		
 	private void checkInsideBuilding(){
-		SimulationState ss;		
-		ss = (GameObject.FindGameObjectWithTag("GameController").
-			GetComponent(typeof(SimulationEngineComponentScript))
-			as SimulationEngineComponentScript).engine as SimulationState;				
+		//SimulationState ss;		
+		//ss = (GameObject.FindGameObjectWithTag("GameController").
+			//GetComponent(typeof(SimulationEngineComponentScript))
+			//as SimulationEngineComponentScript).engine as SimulationState;				
 		//ss.stdout.Send("Inns: "+ss.inns.Values.ToString());
-		int currentNode = (AstarPath.active.GetNearest(this.transform.position).node as GridNode).GetIndex();				
+        int currentNode = this.getNode().GetIndex();				
 		if (SimulationState.getInstance().nodeToInn.ContainsKey(currentNode)) {
 			Inn inn = SimulationState.getInstance().nodeToInn[currentNode];
 			inn.heal(this);
@@ -172,7 +173,8 @@ public class Agent : Entity {
 	
 	public void movePosCond(int node){
 		float cost = _controller.move((Vector3)(AstarPath.active.graphs[0].nodes[node].position));
-		subLife((int)(cost+0.5)); //0.5 de redondeo, dado que el cast a int trunca.	
+		subLife((int)(cost+0.5)); //0.5 de redondeo, dado que el cast a int trunca.
+        this.gold += 1;
 	}
 	
 	// posiblemente innecesario
@@ -342,8 +344,10 @@ public class Agent : Entity {
 	public bool castSpellSleepPreCon(Agent target, EObject potion){
 		SimulationState.getInstance().stdout.Send(target._name);
 		SimulationState.getInstance().stdout.Send(potion.ToString());
-		Vector3 distance = this.transform.position - this.position;
-		return target != null && target.isConscious()
+        if (target == null) // Can this happen?
+            return false;
+        Vector3 distance = this.transform.position - target.transform.position;
+        return target != null && target.isConscious()
 			&& potion != null && backpack.Contains(potion) && distance.magnitude < 11f;
 	}
 	
@@ -387,7 +391,17 @@ public class Agent : Entity {
 		}
 	}
 
-	public Home getHome() {
+    public bool buyPreCond(Inn inn, EObject item) {
+        return inn != null && inn.getNode() == this.getNode() && inn != null && inn.has(item) && this.gold >= item.Price;
+    }
+
+    public void buyPosCond(Inn inn, EObject item) {
+        this.backpack.Add(item);
+        inn.sell(item);
+        this.gold -= item.Price;
+    }
+
+    public Home getHome() {
 		return home;
 	}
 	
@@ -400,20 +414,28 @@ public class Agent : Entity {
 		p.addEntitiesRange(perceptObjects<Potion>  ("potion")  .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptNodes()				 .Cast<IPerceivableEntity>().ToList());
 	}
-	
-	public override string toProlog(){
-		string aux = base.toProlog();		
-		List<string> auxList = new List<string>();
-		foreach(EObject eo in this.backpack) {
-			auxList.Add(eo.toProlog());			
-		}
-		aux = aux + String.Format("[[life, {0}], [lifeTotal, {1}], [skill, {2}], [lastAction, [{3}, {4}]], [home, {5}], [has, {6}]])", 
-			this.life, this.lifeTotal, this.skill, this.agentState.lastAction.toProlog(), this.agentState.lastActionTime,
-		    (home != null) ? home.getName() : "no_home", PrologList.AtomList<string>(auxList));		
-		return aux;
-	}
-	
-	public string selfProperties(bool inProlog = true){
+
+    protected override Dictionary<string, string> getPerceptionProps()
+    {
+        Dictionary<string, string> percProps = base.getPerceptionProps();
+        percProps.Add("life", this.life.ToString());
+        percProps.Add("lifeTotal", this.lifeTotal.ToString());
+        percProps.Add("skill", this.skill.ToString());
+        percProps.Add("gold", this.gold.ToString());
+        percProps.Add("lastAction", "[" + this.agentState.lastAction.toProlog() + "," + this.agentState.lastActionTime + "]");
+        percProps.Add("home", (home != null) ? home.getName() : "no_home");
+
+        List<string> backpackPl = new List<string>();
+        foreach (EObject eo in this.backpack)
+        {
+            backpackPl.Add(eo.toProlog());
+        }
+        percProps.Add("has", PrologList.AtomList<string>(backpackPl));
+        return percProps;
+    }
+
+
+    public string selfProperties(bool inProlog = true){
 		Building building = inBuilding();
 		string   inside   = building != null ? building._name : "no";
 		string   aux;

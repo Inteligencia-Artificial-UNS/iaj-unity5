@@ -93,26 +93,11 @@ public class Engine : MonoBehaviour, IEngine, IEngineComponent {
 		
 		inn = GameObject.FindWithTag ("inn").GetComponent<Inn>();
 	}
-	
-	// implementación potencialmente bugosa
-	public void addGold(Gold gold){	
-		string name = "gold" + objects.Count;
-		gold._name  = name;
-		objects[name] = gold;
-	}
-	
-	public void addPotion(Potion potion){		
-		string name = "p" + objects.Count;
-		potion._name  = name;
-		objects[name] = potion;
-	}
-	
-//	void Update () {
-//		Transform p;
-//		foreach(Agent a in agents){
-//			p = a.transform;
-//			if (inn.isInside(p.position))
-//				Debug.Log(a.name + " is inside the inn");
-//		}
-//	}
+
+    public void addEntityObject(EObject entity) {
+        string name = entity._type.Substring(0,1) + objects.Count;
+        entity._name = name;
+        objects[name] = entity;
+    }
+    
 }

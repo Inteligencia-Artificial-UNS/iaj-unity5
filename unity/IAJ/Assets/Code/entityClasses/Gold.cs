@@ -13,9 +13,8 @@ public class Gold : EObject {
 
     public override void Start(){
 		base.Start();
-		this._engine = SimulationState.getInstance();
 		if (!createdByCode){
-			_engine.addGold(this);
+            SimulationState.getInstance().addEntityObject(this);
 		}
 	}	
 		
@@ -26,8 +25,7 @@ public class Gold : EObject {
 		Gold       gold    = gameObj.GetComponent<Gold>();
 		gold.createdByCode = true;
 		gold._type 		   = "gold";
-		gold._engine	   = SimulationState.getInstance();		
-		gold._engine.addGold(gold);
+        SimulationState.getInstance().addEntityObject(gold);
 		return gold;
 	}
 	

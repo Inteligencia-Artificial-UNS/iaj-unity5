@@ -1,21 +1,9 @@
 ﻿<Properties StartupConfiguration="{AAF2225A-11A8-05C3-F2A6-1A9A0ED91721}|">
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Code/entityClasses/Booster.cs">
     <Files>
-      <File FileName="Assets/Code/SimulationState.cs" Line="105" Column="1" />
-      <File FileName="Assets/Code/SimulationEngine.cs" Line="202" Column="47" />
-      <File FileName="Assets/Code/entityClasses/Entity.cs" Line="19" Column="22" />
-      <File FileName="Assets/Code/entityClasses/EObject.cs" Line="9" Column="16" />
-      <File FileName="Assets/Code/entityClasses/Potion.cs" Line="23" Column="3" />
-      <File FileName="Assets/Code/entityClasses/Grave.cs" Line="27" Column="15" />
-      <File FileName="Assets/Code/PrologList.cs" Line="27" Column="28" />
-      <File FileName="Assets/Code/entityClasses/Agent.cs" Line="399" Column="30" />
-      <File FileName="Assets/Code/entityClasses/Inn.cs" Line="129" Column="23" />
-      <File FileName="Assets/Code/Percept.cs" Line="17" Column="1" />
-      <File FileName="Assets/Code/entityClasses/Gold.cs" Line="11" Column="25" />
-      <File FileName="Assets/Plugins/AstarPathfindingProject/Core/AI/Seeker.cs" Line="88" Column="14" />
-      <File FileName="Assets/Code/SimulationConfig.cs" Line="12" Column="65" />
-      <File FileName="Assets/Code/Resources/config.xml" Line="28" Column="24" />
-      <File FileName="IAJ Status" />
+      <File FileName="Assets/Code/entityClasses/Entity.cs" Line="45" Column="24" />
+      <File FileName="Assets/Code/entityClasses/EObject.cs" Line="5" Column="24" />
+      <File FileName="Assets/Code/entityClasses/Booster.cs" Line="98" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
@@ -23,12 +11,9 @@
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/entityClasses/Agent.cs" relfile="Assets/Code/entityClasses/Agent.cs" line="395" column="1" />
-      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/entityClasses/Agent.cs" relfile="Assets/Code/entityClasses/Agent.cs" line="399" column="1" />
-      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/SimulationState.cs" relfile="Assets/Code/SimulationState.cs" line="149" column="1" />
-      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/SimulationEngine.cs" relfile="Assets/Code/SimulationEngine.cs" line="384" column="71" />
-      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/SimulationEngine.cs" relfile="Assets/Code/SimulationEngine.cs" line="243" column="1" />
-      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/SimulationEngine.cs" relfile="Assets/Code/SimulationEngine.cs" line="196" column="1" />
+      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/SimulationEngine.cs" relfile="Assets/Code/SimulationEngine.cs" line="391" column="71" />
+      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/entityClasses/Agent.cs" relfile="Assets/Code/entityClasses/Agent.cs" line="358" column="24" />
+      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/entityClasses/Agent.cs" relfile="Assets/Code/entityClasses/Agent.cs" line="308" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />

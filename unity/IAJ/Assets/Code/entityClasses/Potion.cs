@@ -13,9 +13,8 @@ public class Potion : EObject {
 
 	public override void Start(){
 		base.Start();
-        this._engine = SimulationState.getInstance();
 		if (!createdByCode){
-			_engine.addPotion(this);
+            SimulationState.getInstance().addEntityObject(this);
 		}
 	}		
 	
@@ -26,8 +25,7 @@ public class Potion : EObject {
 		Potion       potion    = gameObj.GetComponent<Potion>();
 		potion.createdByCode = true;
 		potion._type 		   = "potion";
-		potion._engine	   = SimulationState.getInstance();		
-		potion._engine.addPotion(potion);
+        SimulationState.getInstance().addEntityObject(potion);
 		return potion;
 	}
 }

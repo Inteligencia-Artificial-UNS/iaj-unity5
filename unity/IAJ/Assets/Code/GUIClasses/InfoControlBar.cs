@@ -63,8 +63,13 @@ GUIStyle getBlackStyle() {
 //			GUILayout.BeginVertical (style);
 			GUILayout.Box(agent._name, getBlackStyle());			
 //			GUILayout.EndVertical ();
-			GUILayout.Label("HP: "+agent.life //+ "/"+agent.lifeTotal 
-                            + "  " + "XP: "+agent.skill + "  " + "GP: " + agent.gold);
+		var attackPlus = agent.AttackPlus;
+		var defensePlus = agent.DefensePlus;
+		GUILayout.Label("HP: " + agent.life //+ "/"+agent.lifeTotal 
+		                       + "  " + "$: " + agent.gold
+		                       + "  " + "XP: " + agent.skill
+		                       + (attackPlus != 0 ? "+" + attackPlus + "a" : "")
+		                       + (defensePlus != 0 ? "+" + defensePlus + "d" : ""));
 			GUILayout.BeginHorizontal();
 			 GUILayout.Label("BP:");
 			 Dictionary<Type, int> typeToCount = new Dictionary<Type, int>();

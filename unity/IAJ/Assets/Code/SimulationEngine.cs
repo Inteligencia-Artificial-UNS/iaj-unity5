@@ -157,7 +157,7 @@ public class InstantiateRequest {
 }
 
 public enum ActionType {
-    unknown, goodbye, noop, move, attack, pickup, drop, cast_spell, buy
+    unknown, goodbye, noop, move, attack, pickup, drop, cast_spell, buy, sell
 };
 
 public enum ActionResult {
@@ -241,6 +241,13 @@ public class Action {
                 }
                 if (type_str == "buy") {
                     this.type = ActionType.buy;
+                    this.targetID = document.SelectSingleNode("/action/target/id").InnerText;
+                    this.objectID = document.SelectSingleNode("/action/object/id").InnerText;
+                    this.prologString += "(" + targetNodeID + "," + objectID + ")";
+                }
+                if (type_str == "sell")
+                {
+                    this.type = ActionType.sell;
                     this.targetID = document.SelectSingleNode("/action/target/id").InnerText;
                     this.objectID = document.SelectSingleNode("/action/object/id").InnerText;
                     this.prologString += "(" + targetNodeID + "," + objectID + ")";

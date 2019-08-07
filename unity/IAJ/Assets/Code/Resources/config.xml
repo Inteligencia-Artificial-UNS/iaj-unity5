@@ -28,6 +28,10 @@
             duration="1">
         </action>
         <action 
+            name="sell" 
+            duration="1">
+        </action>
+        <action 
             name="attack" 
             duration="1">
             <effects>

@@ -5,8 +5,6 @@ using System.Linq;
 using System;
 
 public class Grave : Building {
-
-	public SimulationState ss;
 	
 	public List<EObject> content = new List<EObject>();	
 	
@@ -16,11 +14,7 @@ public class Grave : Building {
 		SimulationState.getInstance().stdout.Send("entro Start");
 		base.Start();
 		this._type = "grave";
-		this.ss    = (GameObject.FindGameObjectWithTag("GameController").
-			GetComponent(typeof(SimulationEngineComponentScript))
-			as SimulationEngineComponentScript).engine as SimulationState;
-				
-		this.ss.addGrave(this);
+        SimulationState.getInstance().addGrave(this);
 		initializeContent();		
 	}
 	

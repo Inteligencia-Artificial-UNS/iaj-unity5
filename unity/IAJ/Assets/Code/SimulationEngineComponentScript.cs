@@ -10,7 +10,7 @@ using System.Threading;
 using System.Xml;
 
 /******************************************************************************/
-public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
+public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent {
 
     // SIMULATION
     public static SimulationState  ss;
@@ -20,7 +20,7 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
     public  GUISkin          mySkin;
     public  Vector2          scrollPosition;
     public  string           outputText = "";
-	public  GameObject		 agentPrefab, goldPrefab, potionPrefab;
+	public  GameObject		 agentPrefab, goldPrefab, potionPrefab, armorPrefab, helmetPrefab;
 	public  IEngine		  	 engine
 	{
 		get
@@ -32,7 +32,7 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
     
     // Use this for initialization
     void Awake () {		
-        ss = new SimulationState("C:\\config.xml", goldPrefab, potionPrefab);
+        ss = new SimulationState("C:\\config.xml", goldPrefab, potionPrefab, armorPrefab, helmetPrefab);
 		SimulationState.getInstance().stdout.Send("entro Awake Sim Engine");
         se = new SimulationEngine(ss);
 		
@@ -62,14 +62,14 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
 
     void OnGUI () {
         GUI.skin = mySkin;
-        
-		/*
+
+        /*
         scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(512), GUILayout.Height(512));
         GUILayout.Box(outputText);
         GUILayout.EndScrollView();
 		*/
 
-		/*
+        /*
         if (GUI.Button(new Rect(4,682,128,20), "Start")) {			
             ss.stdout.Send("Starting simulation engine...\n");
             se.start();
@@ -81,7 +81,8 @@ public class SimulationEngineComponentScript : MonoBehaviour, IEngineComponent{
         }
         */
 
-		if (GUI.Button(new Rect(4,682,128,20), paused ? "Play" : "Pause")) {
+        if (GUI.Button(new Rect(4, 582, 128, 20), paused ? "Play" : "Pause")) {
+            //if (GUI.Button(new Rect(4,682,128,20), paused ? "Play" : "Pause")) {
 			paused = !paused;
 			if (paused)
 				Time.timeScale = 0;

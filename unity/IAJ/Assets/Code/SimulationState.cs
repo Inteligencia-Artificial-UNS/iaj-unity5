@@ -12,7 +12,7 @@ using Pathfinding.Nodes;
 using Pathfinding;
 
 // Runs within Unity3D
-public class SimulationState : IEngine{
+public class SimulationState : IEngine {
 			
     public  SimulationConfig             config;
     public  Dictionary<string, int>      agentIDs; // nombres -> ids
@@ -24,7 +24,9 @@ public class SimulationState : IEngine{
 	public  MailBox<string>              stdout;
 	public  GameObject					 goldPrefab;
 	public 	GameObject					 potionPrefab;
-	private float	   					 delta;
+    public  GameObject                   armorPrefab;
+    public  GameObject                   helmetPrefab;
+    private float	   					 delta;
 	private Dictionary <string, EObject>	 objectsIn;
 	public  Dictionary <string, Inn>	 inns;
 	public  Dictionary <string, Grave>	 graves;
@@ -74,7 +76,8 @@ public class SimulationState : IEngine{
 	private System.Timers.Timer timer;
 	
 		
-    public SimulationState(string ConfigurationFilePath, GameObject gold = null, GameObject potion = null) {
+    public SimulationState(string ConfigurationFilePath, GameObject gold = null, GameObject potion = null, 
+	    GameObject armorPrefab = null, GameObject helmentPrefab = null) {
 		config               = new SimulationConfig();		
 		agentIDs             = new Dictionary<string, int>       ();
 		agents               = new Dictionary<int,    AgentState>();		
@@ -91,6 +94,8 @@ public class SimulationState : IEngine{
         stdout               = new MailBox   <string>            (true);
 		goldPrefab 			 = gold;
 		potionPrefab		 = potion;
+        this.armorPrefab     = armorPrefab;
+        this.helmetPrefab    = helmentPrefab;
 		_delta               = 0.1f;		
     }
 	
@@ -150,7 +155,13 @@ public class SimulationState : IEngine{
                         result = agent.buyPreCond(target, objects[action.objectID]);
                         break;
             }
-			}
+                case ActionType.sell:
+                    {
+                        Inn target = (inns.ContainsKey(action.targetID)) ? inns[action.targetID] : null;
+                        result = agent.sellPreCond(target, objects[action.objectID]);
+                        break;
+                    }
+            }
 		} catch (System.Collections.Generic.KeyNotFoundException e) {
              SimulationState.getInstance().stdout.Send(String.Format("Key not found in SimulationState.executableAction. Precondition of action {0} Failed: {1} ", action.type.ToString(), e.ToString()));
 			 Debug.LogError(e.ToString());
@@ -200,6 +211,12 @@ public class SimulationState : IEngine{
                     agent.buyPosCond(target, objects[action.objectID]);
                     break;
                 }
+            case ActionType.sell:
+                {
+                    Inn target = (inns.ContainsKey(action.targetID)) ? inns[action.targetID] : null;
+                    agent.sellPosCond(target, objects[action.objectID]);
+                    break;
+                }
         }        		
 		if (!action.type.Equals(ActionType.move))
 			agent.stopActionAfter(agent.actionDurations[action.type.ToString()]);								        
@@ -211,20 +228,14 @@ public class SimulationState : IEngine{
 				agent.addSkill((int)actionEffects[attr]);
 		}
     }		
-	
-	public void addGold(Gold gold){		
-		string name = "gold" + objects.Count;
-		gold._name  = name;
-		objects[name] = gold;
-	}
-	
-	public void addPotion(Potion potion){		
-		string name = "p" + objects.Count;
-		potion._name  = name;
-		objects[name] = potion;
-	}
-	
-	public void addInn(Inn inn){				
+
+    public void addEntityObject(EObject entity) {
+        string name = entity._type.Substring(0, 1) + objects.Count;
+        entity._name = name;
+        objects[name] = entity;
+    }
+
+    public void addInn(Inn inn){				
 		inn._name   = "inn" + inns.Count;
 		inns[inn._name]  = inn;
 		nodeToInn[inn.getNode().GetIndex()] = inn;		
@@ -243,8 +254,8 @@ public class SimulationState : IEngine{
 		SimulationState.getInstance().stdout.Send("name: "+home._name);
 		homes[home._name]  = home;		
 	}
-	
-	public int getTime() {
+
+    public int getTime() {
 		return gameTime;
 	}
 	

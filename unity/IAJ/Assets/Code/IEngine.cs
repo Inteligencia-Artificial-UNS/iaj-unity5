@@ -30,8 +30,7 @@ public interface IEngine{
 		get;
 	}
 	
-	void addGold(Gold gold);
-	void addPotion(Potion potion);
+    void addEntityObject(EObject entity);
 }
 
 // Esto sirve para mantener el puntero al IEngine en el objeto de Unity (el Component). 

@@ -9,19 +9,20 @@ public abstract class Entity : MonoBehaviour, IPerceivableEntity {
 
 	public string    _description;
 	public string    _type;
-	public IEngine   _engine;
 	public GridGraph _graph;
 	public string    _name;
 	public Vector3   position;
-	
-	private Transform _transform;
+
+    private Transform _transform;
+
+
 	
 	public virtual void Start(){
 		_transform = this.transform;
 		_graph     = AstarPath.active.astarData.gridGraph;
 		//_name      = this.gameObject.name;
-		position   = this.transform.position;		
-	}
+		position   = this.transform.position;
+    }
 	
 	
 	/*
@@ -50,7 +51,7 @@ public abstract class Entity : MonoBehaviour, IPerceivableEntity {
         string percPropsS = PrologList.AtomList<string>(percPropsList);
         return String.Format("entity({0}, {1}, {2}, {3}, {4})", 
 			this._name, 
-			this._type,
+			this.getPrologType(),
 			getNode().GetIndex(),
 			Vector3ToProlog(position),
             percPropsS);
@@ -65,8 +66,12 @@ public abstract class Entity : MonoBehaviour, IPerceivableEntity {
 	}
 	
 	public string getPrologId() {
-		return "["+this._type+","+this._name+"]";
+		return "["+this.getPrologType() + ","+this._name+"]";
 	}
+
+    protected virtual string getPrologType() {
+        return this._type;
+    }
 	
 	public void setPosition(Vector3 position) {
 		this.transform.position = position;

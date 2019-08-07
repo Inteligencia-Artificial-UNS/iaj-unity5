@@ -28,8 +28,11 @@ public class Agent : Entity {
 	public  List<EObject>             dropped  = new List<EObject>();
 	public  Dictionary<string, float> actionDurations;
 	public  AgentState                agentState;
-	
-	public  int   _depthOfSight;		// radius of vision, in nodes
+
+	private Booster defenseBooster = null;
+    private Booster attackBooster = null;
+
+    public  int   _depthOfSight;		// radius of vision, in nodes
 	public  float _reach   = 1;			// radius of reach (of objects), in world magnitude
 	private bool   toogle = false;
 	//public  int   velocity = 5;			// TODO: revisar si esto va
@@ -53,7 +56,6 @@ public class Agent : Entity {
 		agent.life            = lifeTotal;
 		agent._description    = description;
 		agent._name           = name;
-		agent._engine         = se;
 		agent._delta	      = se._delta;
 		agent._type		      = "agent";
 		agent.actionDurations = new Dictionary<string, float>(se.actionDurations); // copio las duraciones de las acciones
@@ -104,7 +106,7 @@ public class Agent : Entity {
 		InvokeRepeating("execute", 0, _delta);
 		GetComponent<Rigidbody>().sleepVelocity = 0f;
 		lifeLevelTex = MakeTex (1, 1, Color.green);
-	}
+    }
 
 	public static Texture2D MakeTex( int width, int height, Color col ) {
 		Color[] pix = new Color[width * height];
@@ -127,35 +129,52 @@ public class Agent : Entity {
 		position = transform.position;
 		nodeList = this.perceptNodes();
 		checkInsideBuilding();
-		// TEST
-/*		if (_engine.test){
-			if (!_controller.moving && nodeList.Count > 1){
-				GridNode node = nodeList[UnityEngine.Random.Range(0, nodeList.Count)]._node;
-				_controller.move((Vector3)node.position);	
-				
-			}
-			List<Gold>  goldList = this.perceptObjects<Gold> ("gold");
-			
-			foreach(Gold gold in goldList){
-				if (!dropped.Contains(gold))
-					pickup(gold);
-			}
-			
-			if (backpack.Count > 1){
-				drop(backpack[0]);
-				dropped.Add(backpack[0]);
-			}
-		}
-		// TEST
-*/		
-	}		
+		updateInstalledBoosters();
+
+    }
+
+    private void updateInstalledBoosters() {
+        Booster maxDefenseBooster = MaxDefenseObject;
+        if (maxDefenseBooster != defenseBooster)
+        {
+            // Just deactivate if defenseBooster is still carried by the agent
+            if (defenseBooster != null && defenseBooster.transform.parent == transform)
+            {
+                defenseBooster.gameObject.SetActive(false);
+            }
+            if (maxDefenseBooster != null)
+            {
+                maxDefenseBooster.transform.GetComponent<Rigidbody>().isKinematic = true;
+                maxDefenseBooster.transform.GetComponent<Collider>().enabled = false;
+                maxDefenseBooster.transform.parent = transform;
+                maxDefenseBooster.transform.localPosition = new Vector3(0, .6f, 0);
+                maxDefenseBooster.gameObject.SetActive(true);
+            }
+            defenseBooster = maxDefenseBooster;
+        }
+
+        Booster maxAttackBooster = MaxAttackObject;
+        if (maxAttackBooster != attackBooster)
+        {
+            // Just deactivate if attackBooster is still carried by the agent
+            if (attackBooster != null && attackBooster.transform.parent == transform)
+            {
+                attackBooster.gameObject.SetActive(false);
+            }
+            if (maxAttackBooster != null)
+            {
+                maxAttackBooster.transform.GetComponent<Rigidbody>().isKinematic = true;
+                maxAttackBooster.transform.GetComponent<Collider>().enabled = false;
+                maxAttackBooster.transform.parent = transform;
+                maxAttackBooster.transform.localPosition = new Vector3(0, 0, 0);
+                maxAttackBooster.gameObject.SetActive(true);
+            }
+            attackBooster = maxAttackBooster;
+        }
+    }
+
 	private void checkInsideBuilding(){
-		//SimulationState ss;		
-		//ss = (GameObject.FindGameObjectWithTag("GameController").
-			//GetComponent(typeof(SimulationEngineComponentScript))
-			//as SimulationEngineComponentScript).engine as SimulationState;				
-		//ss.stdout.Send("Inns: "+ss.inns.Values.ToString());
-        int currentNode = this.getNode().GetIndex();				
+		int currentNode = this.getNode().GetIndex();				
 		if (SimulationState.getInstance().nodeToInn.ContainsKey(currentNode)) {
 			Inn inn = SimulationState.getInstance().nodeToInn[currentNode];
 			inn.heal(this);
@@ -282,11 +301,17 @@ public class Agent : Entity {
 			home.put(obj);
 			return;
 		}
-		obj.gameObject.SetActive(true);
-		newPosition.y += 2.5f;
-		obj.setPosition(newPosition);
+        // Drop installed booster
+        if (obj.transform.parent == transform) {
+            obj.transform.parent = null;
+            obj.transform.GetComponent<Collider>().enabled = true;
+            obj.transform.GetComponent<Rigidbody>().isKinematic = false;
+        }
+        newPosition.y += 2.5f;
+        obj.setPosition(newPosition);
 		obj.GetComponent<Rigidbody>().AddForce(new Vector3(20,20,20)); //TODO: cambiar esta fruta
-	}
+        obj.gameObject.SetActive(true);
+    }
 
 	public void dropEverything() {
 		foreach (EObject obj in new List<EObject>(backpack))
@@ -301,14 +326,15 @@ public class Agent : Entity {
 		return distance.magnitude < 11f;
 	}
 	
-	public void attackPosCon(Agent target) {				
-		int diceSides = 100; //TODO add as setting
-				
-		System.Random dice = new System.Random();		
-		int plusAg = dice.Next(diceSides);
-		int plusTargetAg = dice.Next(diceSides);		
-		int attackPowerAg = skill + plusAg;
-		int resistanceTargetAg = target.skill + plusTargetAg;
+	public void attackPosCon(Agent target) {
+        int diceSides = 100; //TODO add as setting
+        System.Random dice = new System.Random();
+        int attackPlusAg = this.AttackPlus;
+        int defensePlusTargetAg = target.DefensePlus;
+        int randomPlusAg = dice.Next(diceSides);
+        int randomPlusTargetAg = dice.Next(diceSides);		
+        int attackPowerAg = skill + attackPlusAg + randomPlusAg;
+        int resistanceTargetAg = target.skill + defensePlusTargetAg + randomPlusTargetAg;
 		//SimulationEngineComponentScript.ss.stdout.Send("attack : power = "+attackPowerAg+" resist = "+resistanceTargetAg +". ");
 		if (attackPowerAg > resistanceTargetAg) {
 			int harm = attackPowerAg - resistanceTargetAg;
@@ -318,8 +344,12 @@ public class Agent : Entity {
 			//SimulationEngineComponentScript.ss.stdout.Send("success. skill = "+ skill+". ");
 		}
 		Transform bubblegun = transform.Find("bubbleGun");
-		bubblegun.LookAt(target.position);		
-		bubblegun.GetComponent<ParticleSystem>().Play();	
+		bubblegun.LookAt(target.position);
+        ParticleSystem gunParticles = bubblegun.GetComponent<ParticleSystem>();
+        Color bubbleColor = attackPlusAg >= Booster.getAttackPlus(Booster.BoosterType.SuperAttack) ? Booster.getColor(Booster.BoosterType.SuperAttack) :
+                                                   (this.AttackPlus >= Booster.getAttackPlus(Booster.BoosterType.Attack) ? Booster.getColor(Booster.BoosterType.Attack) : Color.white);
+        bubblegun.GetComponent<ParticleSystem>().startColor = bubbleColor;
+        gunParticles.Play();	
 	}
 	
 	private void attackStop() {
@@ -392,7 +422,7 @@ public class Agent : Entity {
 	}
 
     public bool buyPreCond(Inn inn, EObject item) {
-        return inn != null && inn.getNode() == this.getNode() && inn != null && inn.has(item) && this.gold >= item.Price;
+        return inn != null && inn.getNode() == this.getNode() && inn.has(item) && this.gold >= item.Price;
     }
 
     public void buyPosCond(Inn inn, EObject item) {
@@ -401,18 +431,71 @@ public class Agent : Entity {
         this.gold -= item.Price;
     }
 
+    public bool sellPreCond(Inn inn, EObject item)
+    {
+        return inn != null && inn.getNode() == this.getNode() && this.backpack.Contains(item);
+    }
+
+    public void sellPosCond(Inn inn, EObject item)
+    {
+        this.backpack.Remove(item);
+        inn.buy(item);
+        this.gold += item.Price;
+    }
+
     public Home getHome() {
 		return home;
 	}
-	
-	public void perceive(Percept p){						
+
+    public int AttackPlus {
+        get {
+            return this.backpack.Aggregate(0, (maxAttack, next) =>
+                                    next is Booster && (next as Booster).Attack > maxAttack ?
+                                    (next as Booster).Attack : maxAttack);
+        }
+    }
+
+    public int DefensePlus {
+        get {
+            return this.backpack.Aggregate(0, (maxDefense, next) =>
+                                           next is Booster && (next as Booster).Defense > maxDefense ?
+                                           (next as Booster).Defense : maxDefense);
+        }
+    }
+
+    public Booster MaxDefenseObject
+    {
+        get
+        {
+            return this.backpack
+                       .Where((obj) => obj is Booster && (obj as Booster).isDefense())
+                       .Aggregate(null as Booster, (maxDefense, next) =>
+                                           (maxDefense == null || (next as Booster).Defense > maxDefense.Defense) ?
+                                           (next as Booster) : maxDefense);
+        }
+    }
+
+    public Booster MaxAttackObject
+    {
+        get
+        {
+            return this.backpack
+                       .Where((obj) => obj is Booster && !(obj as Booster).isDefense())
+                       .Aggregate(null as Booster, (max, next) =>
+                                  (max == null || (next as Booster).Attack > max.Attack) ?
+                                           (next as Booster) : max);
+        }
+    }
+
+    public void perceive(Percept p){						
 		p.addEntitiesRange(perceptObjects<Agent>("agent").Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Gold> ("gold") .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Inn>  ("inn")  .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Grave>  ("grave")  .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Home>  ("home")  .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Potion>  ("potion")  .Cast<IPerceivableEntity>().ToList());
-		p.addEntitiesRange(perceptNodes()				 .Cast<IPerceivableEntity>().ToList());
+        p.addEntitiesRange(perceptObjects<Booster>("booster").Cast<IPerceivableEntity>().ToList());
+        p.addEntitiesRange(perceptNodes()				 .Cast<IPerceivableEntity>().ToList());
 	}
 
     protected override Dictionary<string, string> getPerceptionProps()
@@ -424,6 +507,7 @@ public class Agent : Entity {
         percProps.Add("gold", this.gold.ToString());
         percProps.Add("lastAction", "[" + this.agentState.lastAction.toProlog() + "," + this.agentState.lastActionTime + "]");
         percProps.Add("home", (home != null) ? home.getName() : "no_home");
+        percProps.Add("attackPlus", this.AttackPlus.ToString());
 
         List<string> backpackPl = new List<string>();
         foreach (EObject eo in this.backpack)
@@ -543,7 +627,7 @@ class BFNode{
 		int []    neighbourOffsets = graph.neighbourOffsets;
 		Node      aux;
 		int       index;
-		
+        
 		for (int i = 0; i < 8; i++){ //las 8 conexiones posibles de cada nodo
 			index = node._node.GetIndex();
 			

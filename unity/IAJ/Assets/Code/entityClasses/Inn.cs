@@ -5,8 +5,6 @@ using System.Linq;
 using System;
 
 public class Inn : Building {
-
-	public SimulationState ss;
 	
 	public float healCoefficient;
     public List<EObject> content = new List<EObject>();
@@ -16,11 +14,8 @@ public class Inn : Building {
 	public override void Start(){
 		base.Start();
 		this._type = "inn";
-		this.ss    = (GameObject.FindGameObjectWithTag("GameController").
-			GetComponent(typeof(SimulationEngineComponentScript))
-			as SimulationEngineComponentScript).engine as SimulationState;
-				
-		this.ss.addInn(this);
+
+        SimulationState.getInstance().addInn(this);
 		
 		forbiddenEntry = new Dictionary<Agent, Interval>();
         this.restock();
@@ -109,9 +104,19 @@ public class Inn : Building {
 	}
 
     private void restock() {
-        if (this.content.Count == 0) {
+        List<EObject> potionsList = this.content.Where(item => item is Potion).ToList();
+        if (potionsList.Count == 0) {
             Potion potion = Potion.Create(new Vector3(0, 0, 0));
             this.put(potion);
+        }
+
+        foreach (Booster.BoosterType boosterType in Enum.GetValues(typeof(Booster.BoosterType))) {
+            List<EObject> boostersList = this.content.Where(item =>
+                                                            item is Booster && (item as Booster).Type == boosterType).ToList();
+            if (boostersList.Count == 0) {
+                Booster booster = Booster.Create(new Vector3(0, 0, 0), boosterType);
+                this.put(booster);
+            }
         }
     }
 
@@ -128,5 +133,10 @@ public class Inn : Building {
     public void sell(EObject item) {
         content.Remove(item);
         restock();
+    }
+
+    public void buy(EObject item)
+    {
+        content.Add(item);
     }
 }

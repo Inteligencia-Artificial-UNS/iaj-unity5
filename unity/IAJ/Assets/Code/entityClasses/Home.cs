@@ -5,8 +5,6 @@ using System.Linq;
 using System;
 
 public class Home : Building {
-
-	public SimulationState ss;
 	
 	public List<EObject> content = new List<EObject>();	
 
@@ -17,11 +15,7 @@ public class Home : Building {
 		SimulationState.getInstance().stdout.Send("entro Start");
 		base.Start();
 		this._type = "home";
-		this.ss    = (GameObject.FindGameObjectWithTag("GameController").
-			GetComponent(typeof(SimulationEngineComponentScript))
-			as SimulationEngineComponentScript).engine as SimulationState;
-				
-		this.ss.addHome(this);
+        SimulationState.getInstance().addHome(this);
 		gameObject.GetComponent<Renderer>().material.color = color;
 		texture = Agent.MakeTex(2, 2, color);			
 	}

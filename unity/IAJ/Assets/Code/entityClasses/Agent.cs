@@ -18,9 +18,9 @@ public class Agent : Entity {
 	private float _delta = 0.1f;   		// time between ticks of "simulation"
 	public  int   life;
 	public  int   skill = 100;
-    public int gold = 10;
-	
-	private Home home = null;
+    public  int   gold = 1000;             // In cents
+
+    private Home home = null;
 	
 	private RigidBodyController       _controller;	
 	private List<PerceivableNode>     nodeList;							// TODO: Borrar. Es para test nomás
@@ -193,8 +193,9 @@ public class Agent : Entity {
 	public void movePosCond(int node){
 		float cost = _controller.move((Vector3)(AstarPath.active.graphs[0].nodes[node].position));
 		subLife((int)(cost+0.5)); //0.5 de redondeo, dado que el cast a int trunca.
-        this.gold += 1;
-	}
+        this.gold += 10;
+        // this.gold += 100; // To test
+    }
 	
 	// posiblemente innecesario
 	public void moveToPosition(Vector3 target){
@@ -422,13 +423,13 @@ public class Agent : Entity {
 	}
 
     public bool buyPreCond(Inn inn, EObject item) {
-        return inn != null && inn.getNode() == this.getNode() && inn.has(item) && this.gold >= item.Price;
+        return inn != null && inn.getNode() == this.getNode() && inn.has(item) && this.gold >= item.Price * 100;
     }
 
     public void buyPosCond(Inn inn, EObject item) {
         this.backpack.Add(item);
         inn.sell(item);
-        this.gold -= item.Price;
+        this.gold -= item.Price * 100;
     }
 
     public bool sellPreCond(Inn inn, EObject item)
@@ -440,7 +441,7 @@ public class Agent : Entity {
     {
         this.backpack.Remove(item);
         inn.buy(item);
-        this.gold += item.Price;
+        this.gold += item.Price * 100;
     }
 
     public Home getHome() {
@@ -489,7 +490,7 @@ public class Agent : Entity {
 
     public void perceive(Percept p){						
 		p.addEntitiesRange(perceptObjects<Agent>("agent").Cast<IPerceivableEntity>().ToList());
-		p.addEntitiesRange(perceptObjects<Gold> ("gold") .Cast<IPerceivableEntity>().ToList());
+        p.addEntitiesRange(perceptObjects<Gold> ("gold") .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Inn>  ("inn")  .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Grave>  ("grave")  .Cast<IPerceivableEntity>().ToList());
 		p.addEntitiesRange(perceptObjects<Home>  ("home")  .Cast<IPerceivableEntity>().ToList());
@@ -504,7 +505,7 @@ public class Agent : Entity {
         percProps.Add("life", this.life.ToString());
         percProps.Add("lifeTotal", this.lifeTotal.ToString());
         percProps.Add("skill", this.skill.ToString());
-        percProps.Add("gold", this.gold.ToString());
+        percProps.Add("gold", Math.Floor(this.gold/100f).ToString());
         percProps.Add("lastAction", "[" + this.agentState.lastAction.toProlog() + "," + this.agentState.lastActionTime + "]");
         percProps.Add("home", (home != null) ? home.getName() : "no_home");
         percProps.Add("attackPlus", this.AttackPlus.ToString());

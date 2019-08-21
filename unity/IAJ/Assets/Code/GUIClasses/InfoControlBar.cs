@@ -66,7 +66,7 @@ GUIStyle getBlackStyle() {
 		var attackPlus = agent.AttackPlus;
 		var defensePlus = agent.DefensePlus;
 		GUILayout.Label("HP: " + agent.life //+ "/"+agent.lifeTotal 
-		                       + "  " + "$: " + agent.gold
+                               + "  " + "$: " + Math.Floor(agent.gold/100f)
 		                       + "  " + "XP: " + agent.skill
 		                       + (attackPlus != 0 ? "+" + attackPlus + "a" : "")
 		                       + (defensePlus != 0 ? "+" + defensePlus + "d" : ""));

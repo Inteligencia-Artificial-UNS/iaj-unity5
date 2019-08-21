@@ -3,11 +3,13 @@ using System.Collections;
 
 public class Gold : EObject {
 
+    public const string TYPE = "relic";
+
     public void Awake()
     {
         // Put field initialization on awake since Start is not called for 
         // objects that are de-activaded on the beginning (see Inn.put)
-        this._type = "gold";
+        this._type = TYPE;
         this.weigth = 2;
     }
 
@@ -24,7 +26,7 @@ public class Gold : EObject {
 		GameObject gameObj = Instantiate(prefab, position, Quaternion.identity) as GameObject;
 		Gold       gold    = gameObj.GetComponent<Gold>();
 		gold.createdByCode = true;
-		gold._type 		   = "gold";
+        gold._type 		   = TYPE;
         SimulationState.getInstance().addEntityObject(gold);
 		return gold;
 	}

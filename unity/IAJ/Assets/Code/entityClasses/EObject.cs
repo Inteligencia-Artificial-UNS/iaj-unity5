@@ -30,7 +30,7 @@ public abstract class EObject : Entity {
 
     protected override Dictionary<string, string> getPerceptionProps() {
         Dictionary<string, string> percProps = base.getPerceptionProps();
-        percProps.Add("weight", this.weigth.ToString());
+        // percProps.Add("weight", this.weigth.ToString());
         percProps.Add("price", this.Price.ToString());
         return percProps;
     }

@@ -35,7 +35,7 @@ public class Booster : EObject
         switch (booster)
         {
             case BoosterType.Attack: return 20;
-            case BoosterType.SuperAttack: return 30;
+            case BoosterType.SuperAttack: return 40;
             case BoosterType.Defense: return 20;
             default: return 40; // BoosterType.SuperDefense
         }
@@ -118,8 +118,12 @@ public class Booster : EObject
     protected override Dictionary<string, string> getPerceptionProps()
     {
         Dictionary<string, string> percProps = base.getPerceptionProps();
-        percProps.Add("attack", this.Attack.ToString());
-        percProps.Add("defense", this.Defense.ToString());
+        if (this.Attack > 0) {
+            percProps.Add("attack", this.Attack.ToString());
+        }
+        if (this.Defense > 0) {
+            percProps.Add("defense", this.Defense.ToString());
+        }
         return percProps;
     }
 
@@ -128,9 +132,9 @@ public class Booster : EObject
         switch (this.Type)
         {
             case BoosterType.Attack: return "ammo";
-            case BoosterType.SuperAttack: return "super_ammo";
+            case BoosterType.SuperAttack: return "ammo";
             case BoosterType.Defense: return "helmet";
-            default: return "super_helmet";
+            default: return "helmet";
         }
     }
 

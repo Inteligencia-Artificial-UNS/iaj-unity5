@@ -141,6 +141,8 @@ public class Agent : Entity {
             if (defenseBooster != null && defenseBooster.transform.parent == transform)
             {
                 defenseBooster.gameObject.SetActive(false);
+//                defenseBooster.transform.GetComponent<Rigidbody>().isKinematic = false;
+//                defenseBooster.transform.GetComponent<Collider>().enabled = true;
             }
             if (maxDefenseBooster != null)
             {
@@ -160,6 +162,8 @@ public class Agent : Entity {
             if (attackBooster != null && attackBooster.transform.parent == transform)
             {
                 attackBooster.gameObject.SetActive(false);
+//                attackBooster.transform.GetComponent<Rigidbody>().isKinematic = false;
+//                attackBooster.transform.GetComponent<Collider>().enabled = true;
             }
             if (maxAttackBooster != null)
             {

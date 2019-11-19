@@ -17,8 +17,8 @@ public class Agent : Entity {
 										// Es el mismo número que el node size definido en el objeto A*, por IDE
 	private float _delta = 0.1f;   		// time between ticks of "simulation"
 	public  int   life;
-	public  int   skill = 100;
-    public  int   gold = 1000;             // In cents
+	public  int   skill = 0;             // In cents, initilized from prefab on Unity editor, with 2000.
+    public  int   gold = 0;             // In cents, initilized from prefab on Unity editor, with 0.
 
     private Home home = null;
 	
@@ -193,7 +193,7 @@ public class Agent : Entity {
 	public void movePosCond(int node){
 		float cost = _controller.move((Vector3)(AstarPath.active.graphs[0].nodes[node].position));
 		subLife((int)(cost+0.5)); //0.5 de redondeo, dado que el cast a int trunca.
-        this.gold += 10;
+        this.gold += 20;
         // this.gold += 100; // To test
     }
 	
@@ -328,7 +328,7 @@ public class Agent : Entity {
 	}
 	
 	public void attackPosCon(Agent target) {
-        int diceSides = 100; //TODO add as setting
+        int diceSides = 2000; // TODO add as setting
         System.Random dice = new System.Random();
         int attackPlusAg = this.AttackPlus;
         int defensePlusTargetAg = target.DefensePlus;
@@ -504,11 +504,12 @@ public class Agent : Entity {
         Dictionary<string, string> percProps = base.getPerceptionProps();
         percProps.Add("life", this.life.ToString());
         percProps.Add("lifeTotal", this.lifeTotal.ToString());
-        percProps.Add("skill", this.skill.ToString());
+        percProps.Add("skill", Math.Floor(this.skill/100f).ToString());
         percProps.Add("gold", Math.Floor(this.gold/100f).ToString());
         percProps.Add("lastAction", "[" + this.agentState.lastAction.toProlog() + "," + this.agentState.lastActionTime + "]");
         percProps.Add("home", (home != null) ? home.getName() : "no_home");
         percProps.Add("attackPlus", this.AttackPlus.ToString());
+        percProps.Add("defensePlus", this.DefensePlus.ToString());
 
         List<string> backpackPl = new List<string>();
         foreach (EObject eo in this.backpack)

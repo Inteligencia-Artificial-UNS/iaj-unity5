@@ -1,24 +1,38 @@
 ﻿<Properties StartupConfiguration="{AAF2225A-11A8-05C3-F2A6-1A9A0ED91721}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Code/entityClasses/Entity.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Code/entityClasses/Booster.cs">
     <Files>
-      <File FileName="Assets/Code/entityClasses/Gold.cs" Line="4" Column="23" />
-      <File FileName="Assets/Code/entityClasses/Agent.cs" Line="486" Column="29" />
-      <File FileName="Assets/Code/Engine.cs" Line="9" Column="35" />
-      <File FileName="Assets/Plugins/AstarPathfindingProject/Core/AstarData.cs" Line="175" Column="67" />
-      <File FileName="Assets/AstarPathfindingEditor/Editor/AstarPathEditor.cs" Line="1152" Column="41" />
-      <File FileName="Assets/Code/entityClasses/Grave.cs" Line="54" Column="4" />
-      <File FileName="Assets/Code/entityClasses/Booster.cs" Line="126" Column="36" />
-      <File FileName="Assets/Code/entityClasses/Entity.cs" Line="8" Column="23" />
-      <File FileName="Assets/Code/entityClasses/EObject.cs" Line="5" Column="35" />
+      <File FileName="Assets/Code/Resources/config.xml" Line="40" Column="23" />
+      <File FileName="Assets/Code/entityClasses/Booster.cs" Line="91" Column="24" />
+      <File FileName="Assets/Code/entityClasses/Agent.cs" Line="486" Column="82" />
+      <File FileName="Assets/Code/GUIClasses/InfoControlBar.cs" Line="77" Column="18" />
+      <File FileName="Assets/Code/entityClasses/EObject.cs" Line="13" Column="23" />
+      <File FileName="Assets/Code/entityClasses/Entity.cs" Line="11" Column="24" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="IAJ" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Code" expanded="True">
+                <Node name="entityClasses" expanded="True">
+                  <Node name="Booster.cs" selected="True" />
+                </Node>
+                <Node name="GUIClasses" expanded="True" />
+                <Node name="Resources" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="b7a944fd-74c3-4ec4-ac83-edbabba793ad" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/SimulationEngine.cs" relfile="Assets/Code/SimulationEngine.cs" line="391" column="71" />
-      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/entityClasses/Agent.cs" relfile="Assets/Code/entityClasses/Agent.cs" line="359" column="24" />
+      <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/entityClasses/Agent.cs" relfile="Assets/Code/entityClasses/Agent.cs" line="360" column="24" />
       <Breakpoint file="/Users/mauro/GitRepos/iaj-unity5/unity/IAJ/Assets/Code/entityClasses/Agent.cs" relfile="Assets/Code/entityClasses/Agent.cs" line="309" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

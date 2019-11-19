@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Booster : EObject
 {
@@ -14,8 +15,8 @@ public class Booster : EObject
     {
         switch (booster)
         {
-            case BoosterType.Attack: return 50;
-            case BoosterType.SuperAttack: return 100;
+            case BoosterType.Attack: return 1000;       // In cents
+            case BoosterType.SuperAttack: return 2000;  // In cents
             default: return 0;
         }
     }
@@ -24,8 +25,8 @@ public class Booster : EObject
     {
         switch (booster)
         {
-            case BoosterType.Defense: return 50;
-            case BoosterType.SuperDefense: return 100;
+            case BoosterType.Defense: return 1000;      // In cents
+            case BoosterType.SuperDefense: return 2000; // In cents
             default: return 0;
         }
     }
@@ -87,7 +88,7 @@ public class Booster : EObject
 
     private static Booster Create(Vector3 position, BoosterType boosterType, int attack, int defense, int price)
     {
-        Object prefab = boosterType == BoosterType.Defense || boosterType == BoosterType.SuperDefense ?
+        UnityEngine.Object prefab = boosterType == BoosterType.Defense || boosterType == BoosterType.SuperDefense ?
                                                    SimulationState.getInstance().helmetPrefab :
                                                    SimulationState.getInstance().armorPrefab;
         GameObject gameObj = Instantiate(prefab, position, Quaternion.identity) as GameObject;
@@ -119,10 +120,10 @@ public class Booster : EObject
     {
         Dictionary<string, string> percProps = base.getPerceptionProps();
         if (this.Attack > 0) {
-            percProps.Add("attack", this.Attack.ToString());
+            percProps.Add("attack", Math.Floor(this.Attack / 100f).ToString());
         }
         if (this.Defense > 0) {
-            percProps.Add("defense", this.Defense.ToString());
+            percProps.Add("defense", Math.Floor(this.Defense / 100f).ToString());
         }
         return percProps;
     }

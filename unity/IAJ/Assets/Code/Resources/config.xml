@@ -36,7 +36,7 @@
             duration="1">
             <effects>
                 <effect attr="hp" value="-5" />
-                <effect attr="xp" value="1" />                
+                <effect attr="xp" value="10" />                
             </effects>
         </action>
 		<action 
@@ -44,7 +44,7 @@
             duration="1">
             <effects>
                 <effect attr="hp" value="-5" />
-                <effect attr="xp" value="10" />
+                <effect attr="xp" value="50" />
             </effects>
         </action>
     </actions>
